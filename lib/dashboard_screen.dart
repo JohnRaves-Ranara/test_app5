@@ -111,7 +111,7 @@ class _dashboard_screenState extends State<dashboard_screen> {
                 decoration: BoxDecoration(
                     image: DecorationImage(
                         image: NetworkImage(
-                            'https://www.shape.com/thmb/xcMppPKHI0J7PuGKeIVDke2tTCA=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/squat-GettyImages-1004449544-2000-f72d11a72ed84c1885ccbeed1ccaa3c1.jpg'),
+                            '${goal.goal_banner_URL}'),
                         fit: BoxFit.cover,
                         colorFilter: ColorFilter.mode(
                             Colors.black.withOpacity(0.6), BlendMode.darken)),
@@ -133,15 +133,18 @@ class _dashboard_screenState extends State<dashboard_screen> {
                                       color: Colors.white,
                                       fontSize: 18,
                                       fontFamily: 'LexendDeca-Bold')),
-                              SizedBox(height: 10),
-                              Text(
-                                  "No excuses! Achieve the body of a Greek God! Lets fucking goooooooooooooooooooooooooooooooooooooo!",
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 2,
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 10,
-                                      fontFamily: 'LexendDeca-ExtraLight'))
+                              Padding(
+                                //diri usually mag overflow ang pixel
+                                padding: const EdgeInsets.only(top: 5),
+                                child: Text(
+                                    '${goal.goal_description}',
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 2,
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 8,
+                                        fontFamily: 'LexendDeca-ExtraLight')),
+                              )
                             ]),
                       ),
                       Padding(

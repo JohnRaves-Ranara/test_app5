@@ -22,6 +22,7 @@ class _documentation_screenState extends State<documentation_screen> {
         height: 75,
         width: 75,
         child: FloatingActionButton(
+          backgroundColor: AppColors().red,
           child: Icon(Icons.add),
           onPressed: () => Navigator.push(
               context,
@@ -44,6 +45,7 @@ class _documentation_screenState extends State<documentation_screen> {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "${widget.goal.goal_name}",
+                  maxLines: 2,
                   style: TextStyle(fontSize: 30, fontFamily: 'Montserrat-Bold', overflow: TextOverflow.ellipsis),
                 )),
           ),

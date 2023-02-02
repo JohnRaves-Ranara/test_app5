@@ -19,9 +19,11 @@ class add_image_screen extends StatefulWidget {
 class _add_image_screenState extends State<add_image_screen> {
   PlatformFile? pickedImage;
   String? imageDownloadURL;
+  TextEditingController imageDescriptionController = TextEditingController();
 
-  Future uploadImage() async {
-    final path = '${widget.loggedInUser.userID}-${widget.loggedInUser.email}/${widget.goal.goal_name}/${pickedImage!.name}';
+  Future upload() async {
+    final path =
+        '${widget.loggedInUser.userID}-${widget.loggedInUser.email}/${widget.goal.goal_name}/${pickedImage!.name}';
     final file = File(pickedImage!.path!);
 
     final storageRef = FirebaseStorage.instance.ref().child(path);
@@ -35,12 +37,12 @@ class _add_image_screenState extends State<add_image_screen> {
         .collection("goals")
         .doc(widget.goal.goal_id)
         .collection("images")
-        .add({'imageDownloadURL': imageDownloadURL});
+        .add({'imageDownloadURL': imageDownloadURL, 'image_Description': imageDescriptionController.text.trim()});
     print("Firestore upload finish");
     Navigator.pop(context);
   }
 
-  Future selectImage() async {
+  Future<void> selectImage() async {
     final result = await FilePicker.platform.pickFiles();
     if (result == null) return;
 
@@ -53,49 +55,88 @@ class _add_image_screenState extends State<add_image_screen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text("Add Image")),
+        title: Align(
+          child: Text(
+            "Add Image",
+            style: TextStyle(fontFamily: 'LexendDeca-Regular'),
+          ),
+          alignment: Alignment.center,
+        ),
+        actions: [
+          ElevatedButton(
+              style: ElevatedButton.styleFrom(elevation: 0),
+              onPressed: () => {upload()},
+              child: Text(
+                "Done",
+                style: TextStyle(
+                    
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontFamily: 'LexendDeca-Regular'),
+              ))
+        ],
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          if (pickedImage != null)
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Container(
-                child: Image.file(File(pickedImage!.path!)),
-                height: 500,
-                width: 500,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
-          Center(
-            child: Container(
-              height: 50,
-              width: 150,
+      body: SingleChildScrollView(
+        reverse: true,
+        child: Column(
+          children: [
+            SizedBox(height: 20,),
+            (pickedImage != null)
+                ? Container(
+                  clipBehavior: Clip.hardEdge,
+                  constraints: BoxConstraints(maxHeight: 180, maxWidth: 180),
+                    child: Image.file(
+                      File(pickedImage!.path!),
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  )
+                : Container(
+                    height: 200,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: AssetImage('assets/upload.png')),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+            SizedBox(height: 20,),
+            Container(
+              height: 40,
+              width: MediaQuery.of(context).size.width / 3,
               child: ElevatedButton(
-                  child: Center(child: Text("Select Image")),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors().red,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25))),
+                  child: Text(
+                    "Select Image",
+                    style: TextStyle(
+                        fontFamily: 'LexendDeca-Regular', fontSize: 12),
+                  ),
                   onPressed: () => {
                         selectImage(),
                       }),
             ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          Center(
-            child: Container(
-              height: 50,
-              width: 150,
-              child: ElevatedButton(
-                  child: Center(child: Text("Confirm")),
-                  onPressed: () => {
-                        uploadImage(),
-                      }),
+            SizedBox(
+              height: 20,
             ),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: TextField(
+                maxLines: 15,
+                style:
+                    TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 16),
+                textInputAction: TextInputAction.done,
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15)),
+                    hintText: "Image Description..."),
+                controller: imageDescriptionController,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

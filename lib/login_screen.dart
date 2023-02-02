@@ -54,7 +54,8 @@ class _login_screenState extends State<login_screen> {
       String username = data['username'];
       String email = data['email'];
       String password = data['password'];
-      return Current_User(userID: id, username: username, email: email, password: password);
+      return Current_User(
+          userID: id, username: username, email: email, password: password);
     }
   }
 
@@ -64,12 +65,14 @@ class _login_screenState extends State<login_screen> {
       child: Scaffold(
         body: Center(
           child: SingleChildScrollView(
-            child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               Container(
                   alignment: Alignment.center,
                   child: Text(
                     "VisioLife",
-                    style: TextStyle(fontSize: 48, fontFamily: 'LexendDeca-Bold'),
+                    style:
+                        TextStyle(fontSize: 48, fontFamily: 'LexendDeca-Bold'),
                   )),
               SizedBox(
                 height: 55,
@@ -80,7 +83,12 @@ class _login_screenState extends State<login_screen> {
                   style: TextStyle(fontFamily: 'LexendDeca-Regular'),
                   controller: emailController,
                   decoration: InputDecoration(
-                      border: OutlineInputBorder(), labelText: "E-mail"),
+                    labelStyle: TextStyle(color: Colors.grey[800]),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey)),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: AppColors().red)),
+                      labelText: "E-mail"),
                 ),
               ),
               SizedBox(
@@ -92,7 +100,13 @@ class _login_screenState extends State<login_screen> {
                   style: TextStyle(fontFamily: 'LexendDeca-Regular'),
                   controller: passwordController,
                   decoration: InputDecoration(
-                      border: OutlineInputBorder(), labelText: "Password"),
+                    labelStyle: TextStyle(color: Colors.grey[800]),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey)),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: AppColors().red)),
+                      labelText: "Password"),
+                      
                 ),
               ),
               SizedBox(height: 50),
@@ -105,24 +119,34 @@ class _login_screenState extends State<login_screen> {
                   child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10))),
+                              borderRadius: BorderRadius.circular(10)),
+                          backgroundColor: AppColors().red),
                       onPressed: logIn,
                       child: Text(
                         "LOGIN",
-                        style: TextStyle(fontFamily: 'LexendDeca-SemiBold', fontSize: 16),
+                        style: TextStyle(
+                            fontFamily: 'LexendDeca-SemiBold', fontSize: 16),
                       ))),
               SizedBox(
                 height: 20,
               ),
               RichText(
                   text: TextSpan(children: [
-                TextSpan(text: 'Don\'t have an account? ', style: TextStyle(color: Colors.black, fontFamily: 'LexendDeca-Regular')),
                 TextSpan(
-                    recognizer: TapGestureRecognizer() ..onTap = () => Navigator.push(context, MaterialPageRoute(builder: (context) => signup_screen())),
+                    text: 'Don\'t have an account? ',
+                    style: TextStyle(
+                        color: Colors.black, fontFamily: 'LexendDeca-Regular')),
+                TextSpan(
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => signup_screen())),
                     text: 'Sign Up here!',
                     style: TextStyle(
                         fontFamily: 'LexendDeca-Regular',
-                        decoration: TextDecoration.underline, color: Colors.red))
+                        decoration: TextDecoration.underline,
+                        color: AppColors().red))
               ]))
             ]),
           ),
