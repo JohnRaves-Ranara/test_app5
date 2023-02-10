@@ -39,6 +39,57 @@ class _addGoalScreenState extends State<addGoalScreen> {
     return imageDownloadURL!;
   }
 
+
+  //validation popup 
+  showValidationDialog(BuildContext context){
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Invalid"),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Please fill out all the necessary information.",
+                    style:
+                        TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 14),
+                  ),
+                  SizedBox(height: 20,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                          SizedBox(width: 20,),
+                          Container(
+                            height: 45,
+                            width: MediaQuery.of(context).size.width / 3.5,
+                            child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  elevation: 5,
+                                    backgroundColor: AppColors().red,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(25))),
+                                child: Text(
+                                  "OK",
+                                  style: TextStyle(
+                                      fontFamily: 'LexendDeca-Regular', fontSize: 12),
+                                ),
+                                onPressed: () => { 
+                                      Navigator.pop(context)
+                                    }),
+                          ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     String goalName;
@@ -48,7 +99,7 @@ class _addGoalScreenState extends State<addGoalScreen> {
         reverse: true,
         child: Column(
           children: [
-            SizedBox(height: 20),
+            SizedBox(height: 10),
             (pickedImage!=null)
             ?
             Container(
@@ -137,41 +188,21 @@ class _addGoalScreenState extends State<addGoalScreen> {
                   ],
                 ),
                 onPressed: () => {
-                  goalName = goalNameController.text,
-                  if (goalName != "")
+                
+                  if (goalNameController.text.isNotEmpty && descriptionController.text.isNotEmpty && pickedImage!=null)
                     {
-                      createGoal(goal_name: goalName, description: descriptionController.text.trim()),
-                      goalNameController.clear(),
+                      createGoal(goal_name: goalNameController.text.trim(), description: descriptionController.text.trim()),
                       Navigator.pop(context)
                     }
+                  else{
+                    showValidationDialog(context)
+                  }
                 },
               ),
             ),
           ],
         ),
       ),
-      // floatingActionButton: Container(
-      //   height: 55,
-      //   width: 120,
-      //   child: FloatingActionButton(
-      //     shape: RoundedRectangleBorder(
-      //         side: BorderSide.none, borderRadius: BorderRadius.circular(12)),
-      //     onPressed: () => {
-      //       goalName = goalNameController.text,
-      //       if (goalName != "")
-      //         {
-      //           createGoal(goal_name: goalName),
-      //           goalNameController.clear(),
-      //           Navigator.pop(context)
-      //         }
-      //     },
-      //     backgroundColor: AppColors().red,
-      //     child: Text(
-      //       "Confirm",
-      //       style: TextStyle(fontSize: 16),
-      //     ),
-      //   ),
-      // ),
     ));
   }
 
