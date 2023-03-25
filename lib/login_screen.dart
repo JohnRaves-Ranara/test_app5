@@ -1,11 +1,14 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:test_app5/dashboard_screen.dart';
+import 'package:test_app5/tabs/LT_goal_screens/main_screen.dart';
+import 'package:test_app5/tabs/LT_goal_tab.dart';
+// import 'package:test_app5/tabs/ST_goal_screens/dashboard_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:test_app5/signup_screen.dart';
 import 'Current_User.dart';
 import 'theme/app_colors.dart';
+// import 'tabs/LT_goal_screens/main_screen.dart';
 
 class login_screen extends StatefulWidget {
   const login_screen({super.key});
@@ -38,11 +41,11 @@ class _login_screenState extends State<login_screen> {
     final Current_User loggedInUser = await getUserInfo(uid);
     emailController.clear();
     passwordController.clear();
-    Navigator.push(
+    Navigator.pushReplacement(
         context,
         MaterialPageRoute(
             builder: (context) =>
-                dashboard_screen(loggedInUser: loggedInUser)));
+                LT_goal_tab(loggedInUser: loggedInUser)));
   }
 
   Future getUserInfo(String id) async {

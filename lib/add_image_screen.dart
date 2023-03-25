@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'Current_User.dart';
-import 'Goal.dart';
+import 'ST_goal.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -9,7 +9,7 @@ import 'theme/app_colors.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 class add_image_screen extends StatefulWidget {
-  final Goal goal;
+  final ST_goal goal;
   final Current_User loggedInUser;
   const add_image_screen({required this.goal, required this.loggedInUser});
 
@@ -42,7 +42,7 @@ class _add_image_screenState extends State<add_image_screen> {
 
   Future upload() async {
     final path =
-        '${widget.loggedInUser.userID}-${widget.loggedInUser.email}/${widget.goal.goal_name}/${pickedImage!.name}';
+        '${widget.loggedInUser.userID}-${widget.loggedInUser.email}/${widget.goal.ST_goal_name}/${pickedImage!.name}';
     final file = File(pickedImage!.path!);
 
     final storageRef = FirebaseStorage.instance.ref().child(path);
@@ -55,7 +55,7 @@ class _add_image_screenState extends State<add_image_screen> {
         .collection('users')
         .doc(widget.loggedInUser.userID)
         .collection("goals")
-        .doc(widget.goal.goal_id)
+        .doc(widget.goal.ST_goal_ID)
         .collection("images")
         .doc();
 

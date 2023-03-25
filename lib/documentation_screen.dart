@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:focused_menu/modals.dart';
 import 'Current_User.dart';
-import 'Goal.dart';
+import 'ST_goal.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'add_image_screen.dart';
 import 'theme/app_colors.dart';
 import 'package:focused_menu/focused_menu.dart';
 
 class documentation_screen extends StatefulWidget {
-  final Goal goal;
+  final ST_goal goal;
   final Current_User loggedInUser;
   const documentation_screen({required this.goal, required this.loggedInUser});
 
@@ -65,7 +65,7 @@ class _documentation_screenState extends State<documentation_screen> {
       .collection('users')
       .doc(widget.loggedInUser.userID)
       .collection('goals')
-      .doc(widget.goal.goal_id)
+      .doc(widget.goal.ST_goal_ID)
       .collection('images')
       .doc(imageID)
       .delete();
@@ -76,7 +76,7 @@ class _documentation_screenState extends State<documentation_screen> {
         .collection('users')
         .doc(widget.loggedInUser.userID)
         .collection('goals')
-        .doc(widget.goal.goal_id)
+        .doc(widget.goal.ST_goal_ID)
         .collection('images')
         .doc(imageID)
         .update({'image_Description': description});
@@ -240,7 +240,7 @@ class _documentation_screenState extends State<documentation_screen> {
             child: Container(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "${widget.goal.goal_name}",
+                  "${widget.goal.ST_goal_name}",
                   maxLines: 2,
                   style: TextStyle(
                       fontSize: 30,
@@ -253,7 +253,7 @@ class _documentation_screenState extends State<documentation_screen> {
             child: Container(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  widget.goal.goal_description!,
+                  widget.goal.ST_goal_desc,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(fontSize: 16, fontFamily: 'LexendDeca-ExtraLight'),
@@ -265,7 +265,7 @@ class _documentation_screenState extends State<documentation_screen> {
                   .collection('users')
                   .doc(widget.loggedInUser.userID)
                   .collection("goals")
-                  .doc(widget.goal.goal_id)
+                  .doc(widget.goal.ST_goal_ID)
                   .collection("images")
                   .snapshots(),
               builder: (context, snapshot) {
@@ -302,7 +302,6 @@ class _documentation_screenState extends State<documentation_screen> {
                                 showDeleteImageDialog(context, imageID)
                               },
                             ),
-                            
                           ],
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),

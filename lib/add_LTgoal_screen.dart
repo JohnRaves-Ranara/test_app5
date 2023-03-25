@@ -1,51 +1,69 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'Current_User.dart';
-import 'theme/app_colors.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/services.dart';
 import 'dart:io';
+import 'package:image_picker/image_picker.dart';
+import 'package:test_app5/Current_User.dart';
 
-class addGoalScreen extends StatefulWidget {
+class add_LTGoal_screen extends StatefulWidget {
   final Current_User loggedInUser;
-  const addGoalScreen({required this.loggedInUser});
+
+  add_LTGoal_screen({required this.loggedInUser});
 
   @override
-  State<addGoalScreen> createState() => _addGoalScreenState();
+  State<add_LTGoal_screen> createState() => _add_LTGoal_screenState();
 }
 
-class _addGoalScreenState extends State<addGoalScreen> {
+class _add_LTGoal_screenState extends State<add_LTGoal_screen> {
   TextEditingController goalNameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
-  PlatformFile? pickedImage;
-  String? imageDownloadURL;
+  File? pickedImage;
 
-  Future<void> selectImage() async {
-    final result = await FilePicker.platform.pickFiles();
-    if (result == null) return;
+  Future createGoal(
+      {required String goal_name, required String description}) async {
+    final DocumentReference docGoal = FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.loggedInUser.userID)
+        .collection('longterm_goals')
+        .doc();
 
-    setState(() {
-      pickedImage = result.files.first;
-    });
+    String goal_banner_URL = await uploadImage(docGoal.id);
+    final json = {
+    'LT_goal_ID': docGoal.id,
+    'LT_goal_name' : goal_name,
+    'LT_goal_desc' : description,
+    'LT_goal_banner' : goal_banner_URL
+    };
+
+    await docGoal.set(json);
   }
 
-  Future<String> uploadImage() async {
-    final path =
-        'goal-image-banners/${widget.loggedInUser.userID}-${widget.loggedInUser.email}/${goalNameController.text.trim()}/${pickedImage!.name}';
-    final file = File(pickedImage!.path!);
-    final storageRef = FirebaseStorage.instance.ref().child(path);
-    await storageRef.putFile(file);
-    imageDownloadURL = await storageRef.getDownloadURL();
-    return imageDownloadURL!;
-  }
-
-
-  //validation popup 
-  showValidationDialog(BuildContext context){
+  //validation popup
+  showValidationDialog(BuildContext context) {
     return showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
+            actions: [
+              Container(
+                height: 45,
+                width: MediaQuery.of(context).size.width / 3.5,
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        elevation: 5,
+                        backgroundColor: Colors.blue[700],
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25))),
+                    child: Text(
+                      "OK",
+                      style: TextStyle(
+                          fontFamily: 'LexendDeca-Regular', fontSize: 12),
+                    ),
+                    onPressed: () => {Navigator.pop(context)}),
+              ),
+            ],
             title: Text("Invalid"),
             content: SingleChildScrollView(
               child: Column(
@@ -53,58 +71,55 @@ class _addGoalScreenState extends State<addGoalScreen> {
                 children: [
                   Text(
                     "Please fill out all the necessary information.",
-                    style:
-                        TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 14),
+                    style: TextStyle(
+                        fontFamily: 'LexendDeca-Regular', fontSize: 14),
                   ),
-                  SizedBox(height: 20,),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                          SizedBox(width: 20,),
-                          Container(
-                            height: 45,
-                            width: MediaQuery.of(context).size.width / 3.5,
-                            child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  elevation: 5,
-                                    backgroundColor: AppColors().red,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(25))),
-                                child: Text(
-                                  "OK",
-                                  style: TextStyle(
-                                      fontFamily: 'LexendDeca-Regular', fontSize: 12),
-                                ),
-                                onPressed: () => { 
-                                      Navigator.pop(context)
-                                    }),
-                          ),
-                    ],
-                  )
+                  SizedBox(
+                    height: 20,
+                  ),
                 ],
               ),
             ),
           );
         });
   }
+  Future<String> uploadImage(String goal_id) async{
+    final path =
+        'LT_goal-image-banners/${widget.loggedInUser.userID}-${widget.loggedInUser.email}/${goalNameController.text.trim()}-${goal_id}/${pickedImage!.path}';
+    final file = File(pickedImage!.path);
+    final storageRef = FirebaseStorage.instance.ref().child(path);
+    await storageRef.putFile(file);
+    String imageDownloadURL = await storageRef.getDownloadURL();
+    return imageDownloadURL;
+  }
 
+  Future<void> selectImage() async{
+    try{
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (image == null) return;
 
+      final imageTemp = File(image.path);
+      setState(()=> this.pickedImage = imageTemp);
+
+    } on PlatformException catch(e){
+      print("Failed to pick image: ${e} ");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    String goalName;
     return SafeArea(
         child: Scaffold(
       body: SingleChildScrollView(
         reverse: true,
         child: Column(
           children: [
-            SizedBox(height: 10),
+            SizedBox(height: 40),
             (pickedImage!=null)
             ?
             Container(
               clipBehavior: Clip.hardEdge,
-              child: Image.file(File(pickedImage!.path!)),
+              child: Image.file(pickedImage!),
               height: 125,
               decoration: BoxDecoration(borderRadius: BorderRadius.circular(25)),
               )
@@ -121,15 +136,16 @@ class _addGoalScreenState extends State<addGoalScreen> {
               child: Container(
                 height: 32,
                 width: MediaQuery.of(context).size.width / 4,
-                child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
+                child: OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: Colors.black87, width: 0.5),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(25)),
-                        backgroundColor: Color(0xFFD13C3C)),
+                        ),
                     child: Text(
                       "Add Icon",
                       style: TextStyle(
-                          fontFamily: 'LexendDeca-Regular', fontSize: 12),
+                          fontFamily: 'LexendDeca-Regular', fontSize: 12, color: Colors.black87),
                     ),
                     onPressed: () => {
                       selectImage()
@@ -140,13 +156,16 @@ class _addGoalScreenState extends State<addGoalScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: TextField(
+                maxLength: 40,
+                maxLengthEnforcement: MaxLengthEnforcement.truncateAfterCompositionEnds,
                 style:
-                    TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 16),
+                    TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 12),
                 textInputAction: TextInputAction.done,
                 decoration: InputDecoration(
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15)),
-                    hintText: "Goal Name"),
+                    hintText: "Goal Name",
+                    counterText: ""),
                 controller: goalNameController,
               ),
             ),
@@ -154,14 +173,15 @@ class _addGoalScreenState extends State<addGoalScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: TextField(
+                maxLength: 245,
                 maxLines: 15,
                 style:
-                    TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 16),
+                    TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 12),
                 textInputAction: TextInputAction.done,
                 decoration: InputDecoration(
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15)),
-                    hintText: "Description"),
+                    hintText: "Description",),
                 controller: descriptionController,
               ),
             ),
@@ -170,20 +190,22 @@ class _addGoalScreenState extends State<addGoalScreen> {
               height: 55,
               width: MediaQuery.of(context).size.width,
               padding: EdgeInsets.symmetric(horizontal: 30),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors().red,
+              child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                    side: BorderSide(width: 0.5, color: Colors.black87.withOpacity(0.4)),
                     shape: RoundedRectangleBorder(
+                        
                         borderRadius: BorderRadius.circular(15))),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("Create Goal",
+                    Text("Create Long-Term Goal",
                         style: TextStyle(
-                            fontFamily: 'LexendDeca-Bold', fontSize: 20)),
+                            fontFamily: 'LexendDeca-Bold', fontSize: 12 ,color: Colors.black87)),
                     Icon(
                       Icons.arrow_forward_ios,
-                      size: 20,
+                      size: 16,
+                      color: Colors.black87,
                     )
                   ],
                 ),
@@ -206,23 +228,5 @@ class _addGoalScreenState extends State<addGoalScreen> {
     ));
   }
 
-  Future createGoal({
-    required String goal_name, required String description
-  }) async {
-    final docGoal = FirebaseFirestore.instance
-        .collection('users')
-        .doc(widget.loggedInUser.userID)
-        .collection('goals')
-        .doc();
-
-    String goal_banner_URL = await uploadImage();
-    final json = {
-      'goal_name': goal_name,
-      'goal_id': docGoal.id,
-      'goal_description': description,
-      'goal_banner_URL' : goal_banner_URL
-    };
-
-    await docGoal.set(json);
-  }
+  
 }
