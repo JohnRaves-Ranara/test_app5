@@ -4,7 +4,8 @@ class Current_User{
   String password;
   String userID;
   String username;
+  String pet_name;
   
-  Current_User({required this.email,required this.password,required this.userID,required this.username});
+  Current_User({required this.pet_name,required this.email,required this.password,required this.userID,required this.username});
 }
 

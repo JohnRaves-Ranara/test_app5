@@ -1,0 +1,375 @@
+import 'package:flutter/material.dart';
+import 'Current_User.dart';
+import 'tabs/LT_goal_tab.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+class choosePet_Screen extends StatefulWidget {
+  Current_User loggedInUser;
+
+  choosePet_Screen({required this.loggedInUser});
+
+  @override
+  State<choosePet_Screen> createState() => _choosePet_ScreenState();
+}
+
+class _choosePet_ScreenState extends State<choosePet_Screen> {
+  String? pokemon_name;
+  int? chosenValue;
+  showPetConfirmed(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "You have chosen ${pokemon_name}! He will accompany you in your journey of accomplishing your life goals.",
+                    style: TextStyle(
+                        fontFamily: 'LexendDeca-Regular', fontSize: 14),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                      height: 200,
+                      width: 200,
+                      child: Image.asset('assets/${pokemon_name}lvl1.gif')),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    "Welcome to VisioLife. Where your goals are brought to life.",
+                    style: TextStyle(
+                        fontFamily: 'LexendDeca-Regular', fontSize: 14),
+                  ),
+                  SizedBox(
+                    height: 50,
+                  ),
+                  Container(
+                    height: 45,
+                    width: MediaQuery.of(context).size.width / 3.5,
+                    child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            elevation: 5,
+                            backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(25))),
+                        child: Text(
+                          "Confirm",
+                          style: TextStyle(
+                              fontFamily: 'LexendDeca-Regular', fontSize: 12),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LT_goal_tab(
+                                      loggedInUser: Current_User(
+                                          email: widget.loggedInUser.email,
+                                          password:
+                                              widget.loggedInUser.password,
+                                          userID: widget.loggedInUser.userID,
+                                          username:
+                                              widget.loggedInUser.username,
+                                          pet_name: pokemon_name!))));
+                        }),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  )
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  showConfirmPet(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              "Confirm Pet?",
+              style: TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 16),
+            ),
+            actions: [
+              Container(
+                height: 45,
+                width: MediaQuery.of(context).size.width / 3.5,
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        elevation: 5,
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25))),
+                    child: Text(
+                      "Cancel",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontFamily: 'LexendDeca-Regular',
+                          fontSize: 12),
+                    ),
+                    onPressed: () => {Navigator.pop(context)}),
+              ),
+              Container(
+                height: 45,
+                width: MediaQuery.of(context).size.width / 3.5,
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        elevation: 5,
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25))),
+                    child: Text(
+                      "Confirm",
+                      style: TextStyle(
+                          fontFamily: 'LexendDeca-Regular',
+                          fontSize: 12,
+                          color: Colors.black),
+                    ),
+                    onPressed: () async {
+                      if (chosenValue == 1) {
+                        setState(() {
+                          pokemon_name = "torchic";
+                        });
+                      } else if (chosenValue == 2) {
+                        setState(() {
+                          pokemon_name = "gengar";
+                        });
+                      } else if (chosenValue == 3) {
+                        setState(() {
+                          pokemon_name = "beldum";
+                        });
+                      } else if (chosenValue == 4) {
+                        setState(() {
+                          pokemon_name = "abra";
+                        });
+                      } else if (chosenValue == 5) {
+                        setState(() {
+                          pokemon_name = "charmeleon";
+                        });
+                      } else {
+                        setState(() {
+                          pokemon_name = "rookidee";
+                        });
+                      }
+                      print(pokemon_name);
+                      await FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(widget.loggedInUser.userID)
+                          .update({"pokemon_name": pokemon_name});
+                      showPetConfirmed(context);
+                    }),
+              ),
+            ],
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Are you sure you want to choose this pet?",
+                    style: TextStyle(
+                        fontFamily: 'LexendDeca-Regular',
+                        fontSize: 14,
+                        color: Colors.black),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.15,
+          ),
+          Text(
+            "Select a pet",
+            style: TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 22),
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.1,
+          ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.5,
+            child: Column(
+              children: [
+                Expanded(
+                  child: GridView.count(
+                    padding: EdgeInsets.all(20),
+                    crossAxisCount: 3,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            chosenValue = 1;
+                            print(chosenValue);
+                          });
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25),
+                              border: Border.all(
+                                  color: (chosenValue == 1)
+                                      ? Colors.blue
+                                      : Colors.transparent,
+                                  width: 2)),
+                          height: 50,
+                          width: 100,
+                          child: Image.asset('assets/pokeball_new_final.gif'),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            chosenValue = 2;
+                            print(chosenValue);
+                          });
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25),
+                              border: Border.all(
+                                  color: (chosenValue == 2)
+                                      ? Colors.blue
+                                      : Colors.transparent,
+                                  width: 2)),
+                          height: 50,
+                          width: 100,
+                          child: Image.asset('assets/pokeball_new_final.gif'),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            chosenValue = 3;
+                            print(chosenValue);
+                          });
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25),
+                              border: Border.all(
+                                  color: (chosenValue == 3)
+                                      ? Colors.blue
+                                      : Colors.transparent,
+                                  width: 2)),
+                          height: 50,
+                          width: 100,
+                          child: Image.asset('assets/pokeball_new_final.gif'),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            chosenValue = 4;
+                            print(chosenValue);
+                          });
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25),
+                              border: Border.all(
+                                  color: (chosenValue == 4)
+                                      ? Colors.blue
+                                      : Colors.transparent,
+                                  width: 2)),
+                          height: 50,
+                          width: 100,
+                          child: Image.asset('assets/pokeball_new_final.gif'),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            chosenValue = 5;
+                            print(chosenValue);
+                          });
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25),
+                              border: Border.all(
+                                  color: (chosenValue == 5)
+                                      ? Colors.blue
+                                      : Colors.transparent,
+                                  width: 2)),
+                          height: 50,
+                          width: 100,
+                          child: Image.asset('assets/pokeball_new_final.gif'),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            chosenValue = 6;
+                            print(chosenValue);
+                          });
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25),
+                              border: Border.all(
+                                  color: (chosenValue == 6)
+                                      ? Colors.blue
+                                      : Colors.transparent,
+                                  width: 2)),
+                          height: 50,
+                          width: 100,
+                          child: Image.asset('assets/pokeball_new_final.gif'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            height: 50,
+            width: 145,
+            child: OutlinedButton(
+              onPressed: () async {
+                showConfirmPet(context);
+              },
+              child: Text(
+                "Confirm",
+                style: TextStyle(
+                    fontFamily: 'LexendDeca-Bold',
+                    fontSize: 20,
+                    color: Colors.black87),
+              ),
+              style: OutlinedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25)),
+                  backgroundColor: Colors.white,
+                  elevation: 5),
+            ),
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.1,
+          )
+        ],
+      ),
+    );
+  }
+}

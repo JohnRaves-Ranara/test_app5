@@ -13,16 +13,16 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 
-class main_screen extends StatefulWidget {
+class completed_LT_goals extends StatefulWidget {
   final Current_User loggedInUser;
 
-  main_screen({required this.loggedInUser});
+  completed_LT_goals({required this.loggedInUser});
 
   @override
-  State<main_screen> createState() => _main_screenState();
+  State<completed_LT_goals> createState() => _completed_LT_goalsState();
 }
 
-class _main_screenState extends State<main_screen> {
+class _completed_LT_goalsState extends State<completed_LT_goals> {
   TextEditingController goalNameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   File? pickedImage;
@@ -264,14 +264,6 @@ class _main_screenState extends State<main_screen> {
       openWithTap: false,
       menuItems: [
         FocusedMenuItem(
-            title: Text("Update"),
-            onPressed: () {
-              goalNameController.text = LT_goal_info.LT_goal_name;
-              descriptionController.text = LT_goal_info.LT_goal_desc;
-              showUpdateGoalDialog(context, LT_goal_info.LT_goal_ID);
-            },
-            trailingIcon: Icon(Icons.update)),
-        FocusedMenuItem(
             backgroundColor: Colors.red[600],
             title: Text(
               "Delete",
@@ -290,7 +282,6 @@ class _main_screenState extends State<main_screen> {
           padding: const EdgeInsets.all(5.0),
           child: Container(
               decoration: BoxDecoration(
-                  
                   border: Border.all(
                       color: Colors.black87.withOpacity(0.2), width: 1),
                   borderRadius: BorderRadius.circular(25),
@@ -356,7 +347,7 @@ class _main_screenState extends State<main_screen> {
         .collection('users')
         .doc(widget.loggedInUser.userID)
         .collection('longterm_goals')
-        .where("LT_goal_status", isEqualTo: "Ongoing")
+        .where("LT_goal_status", isEqualTo: "Finished")
         .snapshots()
         .map((snapshot) => snapshot.docs
             .map((doc) => LT_goal(

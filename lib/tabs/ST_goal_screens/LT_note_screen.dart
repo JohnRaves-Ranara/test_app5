@@ -105,16 +105,18 @@ class _LT_notes_screenState extends State<LT_notes_screen> {
               builder: (context, snapshot) {
                 final notes = snapshot.data!;
                 if (snapshot.hasData) {
-                  return GridView(
-                      physics: BouncingScrollPhysics(),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2),
-                      children: notes.map(buildLT_notes).toList());
-                } else {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: GridView(
+                        physics: BouncingScrollPhysics(),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2),
+                        children: notes.map(buildLT_notes).toList()),
+                  );
+                }
                   return const Center(
                     child: Text("No data found."),
                   );
-                }
               },
             ),
           )

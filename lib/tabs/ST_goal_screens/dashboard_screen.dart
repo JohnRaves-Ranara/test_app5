@@ -4,6 +4,8 @@ import 'package:focused_menu/modals.dart';
 import 'package:test_app5/Current_User.dart';
 import 'package:test_app5/add_STGoal_Screen.dart';
 import 'package:test_app5/login_screen.dart';
+import 'package:test_app5/tabs/LT_goal_screens/main_screen.dart';
+import 'package:test_app5/tabs/LT_goal_tab.dart';
 import '../../ST_goal.dart';
 import '../../documentation_screen.dart';
 import '../../theme/app_colors.dart';
@@ -23,7 +25,10 @@ class dashboard_screen extends StatefulWidget {
 }
 
 class _dashboard_screenState extends State<dashboard_screen> {
-  
+  TextEditingController goalNameController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+  int? finishedCount;
+
   String status = "ongoing";
   bool isLoading = true;
 
@@ -47,7 +52,7 @@ class _dashboard_screenState extends State<dashboard_screen> {
         .collection('shortterm_goals')
         .doc(goalID);
 
-        await docGoal.delete();
+    await docGoal.delete();
   }
 
   Future updateGoal(
@@ -61,14 +66,8 @@ class _dashboard_screenState extends State<dashboard_screen> {
         .collection('shortterm_goals')
         .doc(goalID);
 
-    if (description != null && goal_name == null) {
-      await docGoal.update({'ST_goal_desc': description});
-    } else if (goal_name != null && description == null) {
-      await docGoal.update({'ST_goal_name': goal_name});
-    } else {
-      await docGoal
-          .update({'ST_goal_name': goal_name, 'ST_goal_description': description});
-    }
+    await docGoal
+        .update({'ST_goal_name': goal_name, 'ST_goal_desc': description});
   }
 
   //DELETE POPUP
@@ -77,65 +76,59 @@ class _dashboard_screenState extends State<dashboard_screen> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text("Delete Goal?"),
+            title: Text(
+              "Delete Short-Term Goal?",
+              style: TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 16),
+            ),
+            actions: [
+              Container(
+                height: 45,
+                width: MediaQuery.of(context).size.width / 3.5,
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        elevation: 5,
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25))),
+                    child: Text(
+                      "Cancel",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontFamily: 'LexendDeca-Regular',
+                          fontSize: 12),
+                    ),
+                    onPressed: () => {Navigator.pop(context)}),
+              ),
+              Container(
+                height: 45,
+                width: MediaQuery.of(context).size.width / 3.5,
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        elevation: 5,
+                        backgroundColor: AppColors().red,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25))),
+                    child: Text(
+                      "Delete",
+                      style: TextStyle(
+                          fontFamily: 'LexendDeca-Regular', fontSize: 12),
+                    ),
+                    onPressed: () =>
+                        {deleteGoal(goalID: goalID), Navigator.pop(context)}),
+              ),
+            ],
             content: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Are you sure you want to delete this goal?",
+                    "Are you sure you want to delete this Short-Term Goal?",
                     style: TextStyle(
                         fontFamily: 'LexendDeca-Regular', fontSize: 14),
                   ),
                   SizedBox(
                     height: 20,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Container(
-                        height: 45,
-                        width: MediaQuery.of(context).size.width / 3.5,
-                        child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                elevation: 5,
-                                backgroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(25))),
-                            child: Text(
-                              "Cancel",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: 'LexendDeca-Regular',
-                                  fontSize: 12),
-                            ),
-                            onPressed: () => {Navigator.pop(context)}),
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      Container(
-                        height: 45,
-                        width: MediaQuery.of(context).size.width / 3.5,
-                        child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                elevation: 5,
-                                backgroundColor: AppColors().red,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(25))),
-                            child: Text(
-                              "Delete",
-                              style: TextStyle(
-                                  fontFamily: 'LexendDeca-Regular',
-                                  fontSize: 12),
-                            ),
-                            onPressed: () => {
-                                  deleteGoal(goalID: goalID),
-                                  Navigator.pop(context)
-                                }),
-                      ),
-                    ],
-                  )
                 ],
               ),
             ),
@@ -145,14 +138,14 @@ class _dashboard_screenState extends State<dashboard_screen> {
 
   //UPDATE POPUP
   showUpdateGoalDialog(BuildContext context, String goalID) {
-    TextEditingController goalNameController = TextEditingController();
-    TextEditingController descriptionController = TextEditingController();
-
     return showDialog(
         context: context,
         builder: ((context) {
           return AlertDialog(
-            title: Text("Update Goal"),
+            title: Text(
+              "Update Short-Term Goal",
+              style: TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 16),
+            ),
             content: SingleChildScrollView(
               reverse: true,
               child: Column(
@@ -161,7 +154,7 @@ class _dashboard_screenState extends State<dashboard_screen> {
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: TextField(
                       style: TextStyle(
-                          fontFamily: 'LexendDeca-Regular', fontSize: 14),
+                          fontFamily: 'LexendDeca-Regular', fontSize: 12),
                       textInputAction: TextInputAction.done,
                       decoration: InputDecoration(
                           border: OutlineInputBorder(
@@ -174,9 +167,9 @@ class _dashboard_screenState extends State<dashboard_screen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: TextField(
-                      maxLines: 15,
+                      maxLines: 10,
                       style: TextStyle(
-                          fontFamily: 'LexendDeca-Regular', fontSize: 14),
+                          fontFamily: 'LexendDeca-Regular', fontSize: 12),
                       textInputAction: TextInputAction.done,
                       decoration: InputDecoration(
                           border: OutlineInputBorder(
@@ -190,9 +183,9 @@ class _dashboard_screenState extends State<dashboard_screen> {
                     height: 45,
                     width: MediaQuery.of(context).size.width,
                     padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors().red,
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                          side: BorderSide(width: 0.5, color: Colors.black87),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15))),
                       child: Row(
@@ -200,39 +193,21 @@ class _dashboard_screenState extends State<dashboard_screen> {
                         children: [
                           Text("Update Goal",
                               style: TextStyle(
-                                  fontFamily: 'LexendDeca-Bold', fontSize: 15)),
+                                  fontFamily: 'LexendDeca-Regular',
+                                  fontSize: 12,
+                                  color: Colors.black87)),
                           Icon(
                             Icons.arrow_forward_ios,
-                            size: 10,
+                            size: 12,
+                            color: Colors.black87,
                           )
                         ],
                       ),
                       onPressed: () => {
-                        if (goalNameController.text.isNotEmpty &&
-                            descriptionController.text.isEmpty)
-                          {
-                            print("1"),
-                            updateGoal(
-                                goalID: goalID,
-                                goal_name: goalNameController.text.trim())
-                          }
-                        else if (goalNameController.text.isEmpty &&
-                            descriptionController.text.isNotEmpty)
-                          {
-                            print("2"),
-                            updateGoal(
-                                goalID: goalID,
-                                description: descriptionController.text.trim())
-                          }
-                        else if (goalNameController.text.isNotEmpty &&
-                            descriptionController.text.isNotEmpty)
-                          {
-                            print("3"),
-                            updateGoal(
-                                goalID: goalID,
-                                goal_name: goalNameController.text.trim(),
-                                description: descriptionController.text.trim())
-                          },
+                        updateGoal(
+                            goalID: goalID,
+                            goal_name: goalNameController.text.trim(),
+                            description: descriptionController.text.trim()),
                         Navigator.pop(context)
                       },
                     ),
@@ -244,76 +219,216 @@ class _dashboard_screenState extends State<dashboard_screen> {
         }));
   }
 
-  //DELETE POPUP
-  Future<bool?> showLogoutDialog(BuildContext context) async {
+  // //DELETE POPUP
+  // Future<bool?> showLogoutDialog(BuildContext context) async {
+  //   return showDialog(
+  //       context: context,
+  //       builder: (context) {
+  //         return AlertDialog(
+  //           title: Text("Logout"),
+  //           content: SingleChildScrollView(
+  //             child: Column(
+  //               mainAxisAlignment: MainAxisAlignment.center,
+  //               children: [
+  //                 Text(
+  //                   "Are you sure you want to logout?",
+  //                   style: TextStyle(
+  //                       fontFamily: 'LexendDeca-Regular', fontSize: 14),
+  //                 ),
+  //                 SizedBox(
+  //                   height: 20,
+  //                 ),
+  //                 Row(
+  //                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //                   children: [
+  //                     Container(
+  //                       height: 45,
+  //                       width: MediaQuery.of(context).size.width / 3.5,
+  //                       child: ElevatedButton(
+  //                           style: ElevatedButton.styleFrom(
+  //                               elevation: 5,
+  //                               backgroundColor: Colors.white,
+  //                               shape: RoundedRectangleBorder(
+  //                                   borderRadius: BorderRadius.circular(25))),
+  //                           child: Text(
+  //                             "Cancel",
+  //                             style: TextStyle(
+  //                                 color: Colors.black,
+  //                                 fontFamily: 'LexendDeca-Regular',
+  //                                 fontSize: 12),
+  //                           ),
+  //                           onPressed: () => {Navigator.pop(context, false)}),
+  //                     ),
+  //                     SizedBox(
+  //                       width: 20,
+  //                     ),
+  //                     Container(
+  //                       height: 45,
+  //                       width: MediaQuery.of(context).size.width / 3.5,
+  //                       child: ElevatedButton(
+  //                           style: ElevatedButton.styleFrom(
+  //                               elevation: 5,
+  //                               backgroundColor: AppColors().red,
+  //                               shape: RoundedRectangleBorder(
+  //                                   borderRadius: BorderRadius.circular(25))),
+  //                           child: Text(
+  //                             "Logout",
+  //                             style: TextStyle(
+  //                                 fontFamily: 'LexendDeca-Regular',
+  //                                 fontSize: 12),
+  //                           ),
+  //                           onPressed: () => {
+  //                                 Navigator.push(
+  //                                     context,
+  //                                     MaterialPageRoute(
+  //                                         builder: (context) => login_screen()))
+  //                               }),
+  //                     ),
+  //                   ],
+  //                 )
+  //               ],
+  //             ),
+  //           ),
+  //         );
+  //       });
+  // }
+
+  showFinishLT_GoalConfirmDialog(BuildContext context, goalID) {
     return showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text("Logout"),
+            title: Text(
+              "Confirm Long-Term Goal Completion?",
+              style: TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 16),
+            ),
+            actions: [
+              Container(
+                height: 45,
+                width: MediaQuery.of(context).size.width / 3.5,
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        elevation: 5,
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25))),
+                    child: Text(
+                      "Cancel",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontFamily: 'LexendDeca-Regular',
+                          fontSize: 12),
+                    ),
+                    onPressed: () =>
+                        {markAsOngoing(goalID), Navigator.pop(context)}),
+              ),
+              Container(
+                height: 45,
+                width: MediaQuery.of(context).size.width / 3.5,
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        elevation: 5,
+                        backgroundColor: AppColors().red,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25))),
+                    child: Text(
+                      "Confirm",
+                      style: TextStyle(
+                          fontFamily: 'LexendDeca-Regular', fontSize: 12),
+                    ),
+                    onPressed: () => {
+                          Navigator.pop(context),
+                          congratsAndRewardsDialog(context),
+                        }),
+              ),
+            ],
             content: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Are you sure you want to logout?",
+                    "Are you sure you want to complete this Long-Term Goal? Once completed, it will be added to the Finished Goals Tab in view-only mode.",
                     style: TextStyle(
                         fontFamily: 'LexendDeca-Regular', fontSize: 14),
                   ),
                   SizedBox(
                     height: 20,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Container(
-                        height: 45,
-                        width: MediaQuery.of(context).size.width / 3.5,
-                        child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                elevation: 5,
-                                backgroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(25))),
-                            child: Text(
-                              "Cancel",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: 'LexendDeca-Regular',
-                                  fontSize: 12),
-                            ),
-                            onPressed: () => {Navigator.pop(context, false)}),
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      Container(
-                        height: 45,
-                        width: MediaQuery.of(context).size.width / 3.5,
-                        child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                elevation: 5,
-                                backgroundColor: AppColors().red,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(25))),
-                            child: Text(
-                              "Logout",
-                              style: TextStyle(
-                                  fontFamily: 'LexendDeca-Regular',
-                                  fontSize: 12),
-                            ),
-                            onPressed: () => {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => login_screen()))
-                                }),
-                      ),
-                    ],
-                  )
                 ],
               ),
             ),
+          );
+        });
+  }
+
+  markAsOngoing(String ST_goal_id) async {
+    DocumentReference update_status = FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.loggedInUser.userID)
+        .collection('longterm_goals')
+        .doc(widget.LT_goal_info.LT_goal_ID)
+        .collection('shortterm_goals')
+        .doc(ST_goal_id);
+
+    update_status.update({'ST_goal_status': 'Ongoing'});
+  }
+
+  markAsFinished(ST_goal ST_goal_info) async {
+    CollectionReference ST_goal_collection = FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.loggedInUser.userID)
+        .collection('longterm_goals')
+        .doc(widget.LT_goal_info.LT_goal_ID)
+        .collection('shortterm_goals');
+    await ST_goal_collection.doc(ST_goal_info.ST_goal_ID)
+        .update({'ST_goal_status': 'Finished'});
+
+    QuerySnapshot docSnapshot = await ST_goal_collection.get();
+    Query<Object?> checkStatusFinished =
+        ST_goal_collection.where('ST_goal_status', isEqualTo: 'Finished');
+    QuerySnapshot checkFinishedSnapshot = await checkStatusFinished.get();
+    int countDocs = docSnapshot.docs.length;
+    setState(() {
+      finishedCount = checkFinishedSnapshot.docs.length;
+    });
+    print("COUNT OF DOCS: ${countDocs}");
+    print("COUNT OF FINISHED ST GOALS: ${finishedCount}");
+    if (countDocs == finishedCount) {
+      showFinishLT_GoalConfirmDialog(context, ST_goal_info.ST_goal_ID);
+    }
+  }
+
+  congratsAndRewardsDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Hooray!"),
+            content: Text(
+                "You have completed '${widget.LT_goal_info.LT_goal_name}'! Keep up the good work!"),
+            actions: [
+              Container(
+                height: 45,
+                width: MediaQuery.of(context).size.width / 3.5,
+                child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: Colors.black87, width: 0.5),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25))),
+                  onPressed: () async{
+                    await FirebaseFirestore.instance.collection('users')
+                    .doc(widget.loggedInUser.userID)
+                    .collection('longterm_goals')
+                    .doc(widget.LT_goal_info.LT_goal_ID)
+                    .update({
+                      'LT_goal_status' : 'Finished'
+                    });
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => LT_goal_tab(loggedInUser: widget.loggedInUser)));
+                  },
+                  child: Text("OK"),
+                ),
+              )
+            ],
           );
         });
   }
@@ -324,12 +439,11 @@ class _dashboard_screenState extends State<dashboard_screen> {
     return Expanded(
       child: Column(
         children: [
-          // Text(widget.LT_goal_info.LT_goal_name),
           SizedBox(
             height: 25,
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -388,6 +502,9 @@ class _dashboard_screenState extends State<dashboard_screen> {
                             size: 30,
                             color: Colors.black87,
                           ),
+                          SizedBox(
+                            height: 5,
+                          ),
                           Text(
                             "ADD GOAL",
                             style: TextStyle(
@@ -442,12 +559,17 @@ class _dashboard_screenState extends State<dashboard_screen> {
             context,
             MaterialPageRoute(
                 builder: (context) => documentation_screen(
-                    goal: goal, loggedInUser: widget.loggedInUser))),
+                      goal: goal,
+                      loggedInUser: widget.loggedInUser,
+                      LT_goal_info: widget.LT_goal_info,
+                    ))),
       },
       menuItems: [
         FocusedMenuItem(
             title: Text("Update"),
             onPressed: () {
+              goalNameController.text = goal.ST_goal_name;
+              descriptionController.text = goal.ST_goal_desc;
               showUpdateGoalDialog(context, goal.ST_goal_ID);
             },
             trailingIcon: Icon(Icons.update)),
@@ -465,55 +587,34 @@ class _dashboard_screenState extends State<dashboard_screen> {
               color: Colors.white,
             )),
         FocusedMenuItem(
-          backgroundColor: Colors.blue[700],
+            backgroundColor: Colors.blue[700],
             title: Text(
               "Mark as Ongoing",
               style: TextStyle(color: Colors.white),
             ),
             onPressed: () {
-              DocumentReference update_status = FirebaseFirestore.instance
-                    .collection('users')
-                    .doc(widget.loggedInUser.userID)
-                    .collection('longterm_goals')
-                    .doc(widget.LT_goal_info.LT_goal_ID)
-                    .collection('shortterm_goals')
-                    .doc(goal.ST_goal_ID);
-
-              update_status.update({
-                'ST_goal_status' : 'Ongoing'
-              });
+              markAsOngoing(goal.ST_goal_ID);
             },
             trailingIcon: Icon(Icons.circle_outlined)),
         FocusedMenuItem(
-          
-          backgroundColor: Colors.green[700],
+            backgroundColor: Colors.green[700],
             title: Text(
               "Mark as Finished",
               style: TextStyle(color: Colors.white),
             ),
             onPressed: () {
-               DocumentReference update_status = FirebaseFirestore.instance
-                    .collection('users')
-                    .doc(widget.loggedInUser.userID)
-                    .collection('longterm_goals')
-                    .doc(widget.LT_goal_info.LT_goal_ID)
-                    .collection('shortterm_goals')
-                    .doc(goal.ST_goal_ID);
-
-              update_status.update({
-                'ST_goal_status' : 'Finished'
-              });
+              markAsFinished(goal);
             },
             trailingIcon: Icon(Icons.check)),
       ],
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
         child: Container(
             height: 120,
             decoration: BoxDecoration(
                 color: Colors.white,
                 border: Border.all(
-                    color: Colors.black87.withOpacity(0.4), width: 1.5),
+                    color: Colors.black87.withOpacity(0.2), width: 1),
                 borderRadius: BorderRadius.circular(25)),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

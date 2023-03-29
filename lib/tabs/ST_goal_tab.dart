@@ -57,19 +57,21 @@ class _ST_goal_tabState extends State<ST_goal_tab> {
         body: Column(
           children: [
             Center(
-              child: CupertinoSegmentedControl(
-                borderColor: Colors.black,
-                selectedColor: Colors.blue[700],
-                groupValue: groupvalue,
-                children: {
-                  0: text_Tab("Short-Term Goals"),
-                  1: text_Tab("Notes")
-                },
-                onValueChanged: (groupvalue) {
-                  setState(() {
-                    this.groupvalue = groupvalue;
-                  });
-                },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: CupertinoSlidingSegmentedControl(
+                  backgroundColor: Colors.grey.withOpacity(0.1),
+                  groupValue: groupvalue,
+                  children: {
+                    0: text_Tab("Short-Term Goals"),
+                    1: text_Tab("Notes")
+                  },
+                  onValueChanged: (groupvalue) {
+                    setState(() {
+                      this.groupvalue = groupvalue;
+                    });
+                  },
+                ),
               ),
             ),
             (groupvalue == 0)
@@ -94,7 +96,7 @@ class _ST_goal_tabState extends State<ST_goal_tab> {
         child: Center(
           child: Text(
             text,
-            style: TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 14),
+            style: TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 13),
             textAlign: TextAlign.center,
           ),
         ),

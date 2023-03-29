@@ -1,7 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:test_app5/tabs/LT_goal_screens/main_screen.dart';
+// import 'package:test_app5/tabs/LT_goal_screens/main_screen.dart';
 import 'package:test_app5/tabs/LT_goal_tab.dart';
 // import 'package:test_app5/tabs/ST_goal_screens/dashboard_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -20,7 +20,6 @@ class login_screen extends StatefulWidget {
 class _login_screenState extends State<login_screen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  String? username;
 
   @override
   void dispose() {
@@ -57,8 +56,9 @@ class _login_screenState extends State<login_screen> {
       String username = data['username'];
       String email = data['email'];
       String password = data['password'];
+      String pet_name = data['pokemon_name']!;
       return Current_User(
-          userID: id, username: username, email: email, password: password);
+          userID: id, username: username, email: email, password: password, pet_name: pet_name);
     }
   }
 

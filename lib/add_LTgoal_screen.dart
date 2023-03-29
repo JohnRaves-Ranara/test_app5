@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:test_app5/Current_User.dart';
+import 'package:path/path.dart';
 
 class add_LTGoal_screen extends StatefulWidget {
   final Current_User loggedInUser;
@@ -34,7 +35,8 @@ class _add_LTGoal_screenState extends State<add_LTGoal_screen> {
     'LT_goal_ID': docGoal.id,
     'LT_goal_name' : goal_name,
     'LT_goal_desc' : description,
-    'LT_goal_banner' : goal_banner_URL
+    'LT_goal_banner' : goal_banner_URL,
+    'LT_goal_status' : 'Ongoing'
     };
 
     await docGoal.set(json);
@@ -85,7 +87,7 @@ class _add_LTGoal_screenState extends State<add_LTGoal_screen> {
   }
   Future<String> uploadImage(String goal_id) async{
     final path =
-        'LT_goal-image-banners/${widget.loggedInUser.userID}-${widget.loggedInUser.email}/${goalNameController.text.trim()}-${goal_id}/${pickedImage!.path}';
+        'LT_goal-image-banners/${widget.loggedInUser.userID}-${widget.loggedInUser.email}/${goalNameController.text.trim()}-${goal_id}/${basename(pickedImage!.path)}';
     final file = File(pickedImage!.path);
     final storageRef = FirebaseStorage.instance.ref().child(path);
     await storageRef.putFile(file);

@@ -2,6 +2,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:test_app5/choosePet_screen.dart';
+// import 'package:test_app5/tabs/LT_goal_tab.dart';
+import 'Current_User.dart';
 import 'theme/app_colors.dart';
 
 import 'login_screen.dart';
@@ -22,10 +25,25 @@ class _signup_screenState extends State<signup_screen> {
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
-
     super.dispose();
   }
+  
+ Future getUserInfo(String id) async {
+    DocumentSnapshot snapshot =
+        await FirebaseFirestore.instance.collection('users').doc(id).get();
 
+    if (snapshot.exists) {
+      final data = snapshot.data()! as Map<String, dynamic>;
+      String username = data['username'];
+      String email = data['email'];
+      String password = data['password'];
+      String pet_name = data['pokemon_name'];
+
+      return Current_User(
+          userID: id, username: username, email: email, password: password, pet_name: pet_name);
+    }
+  }
+  
   Future signUp() async {
     final FirebaseAuth auth = FirebaseAuth.instance;
     await auth.createUserWithEmailAndPassword(
@@ -38,14 +56,27 @@ class _signup_screenState extends State<signup_screen> {
       'email': emailController.text.trim(),
       'password': passwordController.text.trim(),
       'username': usernameController.text.trim(),
-      'userID': uid
+      'userID': uid,
+      'pokemon_name' : ""
     });
+
+    await FirebaseFirestore.instance.collection('users')
+    .doc(uid)
+    .collection('pokemon')
+    .doc(uid)
+    .set({
+      "userID" : uid,
+      "pokemon_exp" : 0,
+      "pokemon_food" : 0,
+      "pokemon_level" : 1,
+    });
+
+    final Current_User loggedInUser = await getUserInfo(uid);
 
     emailController.clear();
     passwordController.clear();
     usernameController.clear();
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => login_screen()));
+    Navigator.push(context, MaterialPageRoute(builder: (context)=> choosePet_Screen(loggedInUser: loggedInUser)));
   }
 
   @override

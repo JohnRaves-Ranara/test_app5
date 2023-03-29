@@ -1,7 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+// import 'package:test_app5/choosePet_screen.dart';
 import 'package:test_app5/login_screen.dart';
-import 'tabs/LT_goal_screens/main_screen.dart';
+// import 'package:test_app5/test.dart';
+// import 'tabs/LT_goal_screens/main_screen.dart';
 
 Future<void> main() async{
   WidgetsFlutterBinding.ensureInitialized();

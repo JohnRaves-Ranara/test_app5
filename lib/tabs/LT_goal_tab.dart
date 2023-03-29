@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:test_app5/Current_User.dart';
 import 'package:test_app5/add_LTgoal_screen.dart';
+import 'package:test_app5/tabs/LT_goal_screens/completed_LT_goals.dart';
 import 'LT_goal_screens/main_screen.dart';
 import 'LT_goal_screens/pet_screen.dart';
 import 'LT_goal_screens/user_profile_screen.dart';
@@ -35,6 +36,24 @@ class _LT_goal_tabState extends State<LT_goal_tab> {
     });
 
     print("finish add");
+  }
+
+  bruh() async {
+    DocumentReference bruh = FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.loggedInUser.userID)
+        .collection("longterm_goals")
+        .doc("kqk5xoo1pJAuLBCcU2lo");
+    DocumentSnapshot bruhSnap = await bruh.get();
+
+    final DocumentReference target = FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.loggedInUser.userID)
+        .collection("finished_longterm_goals")
+        .doc("kqk5xoo1pJAuLBCcU2lo");
+
+    await target.set(bruhSnap.data());
+    await bruh.delete();
   }
 
   showAddLTGoalDialiog(BuildContext context) {
@@ -126,26 +145,50 @@ class _LT_goal_tabState extends State<LT_goal_tab> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        drawer: Drawer(
+                child: ListView(
+                  children: [
+                    ListTile(
+                      title: Text("Profile", style: TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 18),),
+                      onTap: ()=> Navigator.push(context, MaterialPageRoute(builder: (context)=> user_profile_screen(loggedInUser: widget.loggedInUser))),
+                    )
+                  ],
+                ),
+              ),
         appBar: AppBar(
-          leading: Align(
-              alignment: Alignment.centerRight,
-              child: Text(
-                "Dashboard",
-                style: TextStyle(
-                    fontFamily: 'LexendDeca-Bold',
-                    fontSize: 20,
-                    color: Colors.black),
-              )),
+          leading: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Center(
+              child: Builder(
+                builder: (BuildContext context) {
+                  return IconButton(
+                    iconSize: 300,
+                    icon: Text('VisioLife',
+                        overflow: TextOverflow.fade,
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontFamily: 'LexendDeca-Bold',
+                            fontSize: 19)),
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                    tooltip:
+                        MaterialLocalizations.of(context).openAppDrawerTooltip,
+                  );
+                },
+              ),
+            ),
+          ),
           leadingWidth: 200,
           toolbarHeight: 100,
           actions: [
             (groupvalue == 1)
                 ? Padding(
                     padding: const EdgeInsets.symmetric(
-                        vertical: 10.0, horizontal: 15),
+                        vertical: 25.0, horizontal: 22),
                     child: Container(
                       // color: Colors.orange[100],
-                      width: MediaQuery.of(context).size.width * 0.3,
+                      width: MediaQuery.of(context).size.width * 0.35,
                       child: OutlinedButton(
                         style: OutlinedButton.styleFrom(
                             side: BorderSide(width: 0.5, color: Colors.black87),
@@ -157,17 +200,13 @@ class _LT_goal_tabState extends State<LT_goal_tab> {
                               MaterialPageRoute(
                                   builder: (context) => add_LTGoal_screen(
                                       loggedInUser: widget.loggedInUser)))
+                          // bruh()
                         },
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: Column(
+                          padding: const EdgeInsets.all(8),
+                          child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(
-                                Icons.add,
-                                size: 30,
-                                color: Colors.black87,
-                              ),
                               Text(
                                 "ADD GOAL",
                                 style: TextStyle(
@@ -175,6 +214,14 @@ class _LT_goal_tabState extends State<LT_goal_tab> {
                                     fontFamily: 'LexendDeca-Regular',
                                     color: Colors.black87),
                                 textAlign: TextAlign.center,
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Icon(
+                                Icons.add,
+                                size: 15,
+                                color: Colors.black87,
                               ),
                             ],
                           ),
@@ -192,21 +239,22 @@ class _LT_goal_tabState extends State<LT_goal_tab> {
         body: Column(
           children: [
             Center(
-              child: CupertinoSegmentedControl(
-                // padding: EdgeInsets.symmetric(horizontal: 30),
-                borderColor: Colors.black,
-                selectedColor: Colors.blue[700],
-                groupValue: groupvalue,
-                children: {
-                  0: text_Tab("Pet"),
-                  1: text_Tab("Long-Term Goals"),
-                  2: text_Tab("Profile")
-                },
-                onValueChanged: (groupvalue) {
-                  setState(() {
-                    this.groupvalue = groupvalue;
-                  });
-                },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: CupertinoSlidingSegmentedControl(
+                  backgroundColor: Colors.grey.withOpacity(0.075),
+                  groupValue: groupvalue,
+                  children: {
+                    0: text_Tab("Pet"),
+                    1: text_Tab("Long-Term Goals"),
+                    2: text_Tab("Completed Goals")
+                  },
+                  onValueChanged: (groupvalue) {
+                    setState(() {
+                      this.groupvalue = groupvalue;
+                    });
+                  },
+                ),
               ),
             ),
             (groupvalue == 0)
@@ -217,9 +265,7 @@ class _LT_goal_tabState extends State<LT_goal_tab> {
                     ? main_screen(
                         loggedInUser: widget.loggedInUser,
                       )
-                    : user_profile_screen(
-                        loggedInUser: widget.loggedInUser,
-                      )
+                    : (completed_LT_goals(loggedInUser: widget.loggedInUser))
           ],
         ),
       ),
@@ -227,16 +273,17 @@ class _LT_goal_tabState extends State<LT_goal_tab> {
   }
 
   Widget text_Tab(String text) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-      child: Container(
-        width: 150,
-        child: Center(
-          child: Text(
-            text,
-            style: TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 14,),
-            textAlign: TextAlign.center,
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 6, vertical: 10),
+      width: 150,
+      child: Center(
+        child: Text(
+          text,
+          style: TextStyle(
+            fontFamily: 'LexendDeca-Regular',
+            fontSize: 13,
           ),
+          textAlign: TextAlign.center,
         ),
       ),
     );

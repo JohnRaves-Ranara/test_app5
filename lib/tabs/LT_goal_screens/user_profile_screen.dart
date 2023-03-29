@@ -14,8 +14,8 @@ class user_profile_screen extends StatefulWidget {
 class _user_profile_screenState extends State<user_profile_screen> {
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Column(
+    return Scaffold(
+      body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Center(child: Text("Logged in User: ${widget.loggedInUser.username}"),)
