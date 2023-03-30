@@ -36,7 +36,10 @@ class _add_LTGoal_screenState extends State<add_LTGoal_screen> {
     'LT_goal_name' : goal_name,
     'LT_goal_desc' : description,
     'LT_goal_banner' : goal_banner_URL,
-    'LT_goal_status' : 'Ongoing'
+    'LT_goal_status' : 'Ongoing',
+    'startDate' : DateTime.now().toString(),
+    'endDate' : "",
+    'image_count' : 0
     };
 
     await docGoal.set(json);
@@ -112,11 +115,15 @@ class _add_LTGoal_screenState extends State<add_LTGoal_screen> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            iconTheme: IconThemeData(color: Colors.black),
+          ),
       body: SingleChildScrollView(
         reverse: true,
         child: Column(
           children: [
-            SizedBox(height: 40),
             (pickedImage!=null)
             ?
             Container(

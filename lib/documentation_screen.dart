@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:focused_menu/modals.dart';
+import 'package:test_app5/open_image_screen.dart';
 import 'Current_User.dart';
 import 'LT_goal.dart';
 import 'ST_goal.dart';
@@ -35,14 +36,18 @@ class _documentation_screenState extends State<documentation_screen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
-                      constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width,
-                          maxHeight: 200),
-                      decoration: BoxDecoration(
-                          image:
-                              DecorationImage(image: NetworkImage(imageURL))),
-                    ),
+                    CachedNetworkImage(
+                        placeholder: (context, url) => Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                        imageUrl: imageURL,
+                        imageBuilder: ((context, imageProvider) => Container(
+                              constraints: BoxConstraints(
+                                  maxWidth: MediaQuery.of(context).size.width,
+                                  maxHeight: 200),
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(image: imageProvider)),
+                            ))),
                     SizedBox(
                       height: 20,
                     ),
@@ -67,27 +72,45 @@ class _documentation_screenState extends State<documentation_screen> {
         });
   }
 
-  Future deleteImage(String imageID) async {
+  decreaseImageCount()async{
+    int? imageCount;
+    DocumentSnapshot docSnap = await FirebaseFirestore.instance.collection('users')
+    .doc(widget.loggedInUser.userID)
+    .collection('longterm_goals')
+    .doc(widget.LT_goal_info.LT_goal_ID)
+    .get();
+
+    if(docSnap.exists){
+      final data = docSnap.data()! as Map<String, dynamic>;
+      setState(() {
+        imageCount = data['image_count'];
+      });
+    }
+
+    await FirebaseFirestore.instance.collection('users')
+    .doc(widget.loggedInUser.userID)
+    .collection('longterm_goals')
+    .doc(widget.LT_goal_info.LT_goal_ID)
+    .update({
+      'image_count' : imageCount!-1
+    });
+  }
+
+  deleteImage(String imageID) async {
     await FirebaseFirestore.instance
         .collection('users')
         .doc(widget.loggedInUser.userID)
-        .collection('goals')
+        .collection('longterm_goals')
+        .doc(widget.LT_goal_info.LT_goal_ID)
+        .collection('shortterm_goals')
         .doc(widget.goal.ST_goal_ID)
         .collection('images')
         .doc(imageID)
         .delete();
+    decreaseImageCount();
   }
 
-  Future updateImageDescription(String imageID, String description) async {
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(widget.loggedInUser.userID)
-        .collection('goals')
-        .doc(widget.goal.ST_goal_ID)
-        .collection('images')
-        .doc(imageID)
-        .update({'image_Description': description});
-  }
+  
 
   //DELETE DESCRIPTION POPUP
   showDeleteImageDialog(BuildContext context, imageID) {
@@ -150,8 +173,11 @@ class _documentation_screenState extends State<documentation_screen> {
                                   fontFamily: 'LexendDeca-Regular',
                                   fontSize: 12),
                             ),
-                            onPressed: () =>
-                                {deleteImage(imageID), Navigator.pop(context)}),
+                            onPressed: () => {
+                                  print(imageID),
+                                  deleteImage(imageID),
+                                  Navigator.pop(context)
+                                }),
                       ),
                     ],
                   )
@@ -162,73 +188,7 @@ class _documentation_screenState extends State<documentation_screen> {
         });
   }
 
-  //UPDATE DESCRIPTION POPUP
-  showUpdateDescriptionDialog(BuildContext context, imageID) {
-    TextEditingController descriptionController = TextEditingController();
-
-    return showDialog(
-        context: context,
-        builder: ((context) {
-          return AlertDialog(
-            title: Text(
-              "Edit Description",
-              style: TextStyle(fontFamily: 'LexendDeca-Regular'),
-            ),
-            content: SingleChildScrollView(
-              reverse: true,
-              child: Column(
-                children: [
-                  SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: TextField(
-                      maxLines: 15,
-                      style: TextStyle(
-                          fontFamily: 'LexendDeca-Regular', fontSize: 14),
-                      textInputAction: TextInputAction.done,
-                      decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15)),
-                          hintText: "Description"),
-                      controller: descriptionController,
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  Container(
-                    height: 45,
-                    width: MediaQuery.of(context).size.width,
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors().red,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15))),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text("Confirm edit",
-                              style: TextStyle(
-                                  fontFamily: 'LexendDeca-SemiBold',
-                                  fontSize: 15)),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            size: 15,
-                          )
-                        ],
-                      ),
-                      onPressed: () => {
-                        updateImageDescription(
-                            imageID, descriptionController.text.trim()),
-                        Navigator.pop(context)
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        }));
-  }
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -370,6 +330,7 @@ class _documentation_screenState extends State<documentation_screen> {
                   return (const Center(child: Text("No image/s uploaded.")));
                 } else {
                   return MasonryGridView.builder(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
                       physics: BouncingScrollPhysics(),
                       itemCount: snapshot.data!.docs.length,
                       gridDelegate:
@@ -383,20 +344,13 @@ class _documentation_screenState extends State<documentation_screen> {
                             snapshot.data!.docs[index]['image_desc'];
                         return FocusedMenuHolder(
                           openWithTap: false,
-                          onPressed: () =>
-                              {openImage(context, imageURL, imageDescription)},
+                          onPressed: () => {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => open_image_screen(image_ID: imageID,image_desc: imageDescription, imageURL: imageURL, loggedInUser: widget.loggedInUser, ST_goal_info: widget.goal, LT_goal_info: widget.LT_goal_info)))
+                          },
                           menuItems: [
-                            FocusedMenuItem(
-                              title: Text(
-                                'Edit Description',
-                                style:
-                                    TextStyle(fontFamily: 'LexendDeca-Regular'),
-                              ),
-                              trailingIcon: Icon(Icons.update),
-                              onPressed: () => {
-                                showUpdateDescriptionDialog(context, imageID)
-                              },
-                            ),
                             FocusedMenuItem(
                               title: Text(
                                 'Delete',
@@ -416,8 +370,8 @@ class _documentation_screenState extends State<documentation_screen> {
                                 borderRadius: BorderRadius.circular(10),
                                 child: CachedNetworkImage(
                                   imageUrl: imageURL,
-                                  placeholder: (context, url) =>
-                                      Center(child: const CircularProgressIndicator()),
+                                  placeholder: (context, url) => Center(
+                                      child: const CircularProgressIndicator()),
                                 ),
                               )),
                         );

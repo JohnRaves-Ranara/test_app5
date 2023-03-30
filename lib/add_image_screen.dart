@@ -46,6 +46,30 @@ class _add_image_screenState extends State<add_image_screen> {
     }
   }
 
+  addImageCount()async{
+    int? imageCount;
+    DocumentSnapshot docSnap = await FirebaseFirestore.instance.collection('users')
+    .doc(widget.loggedInUser.userID)
+    .collection('longterm_goals')
+    .doc(widget.LT_goal_info.LT_goal_ID)
+    .get();
+
+    if(docSnap.exists){
+      final data = docSnap.data()! as Map<String, dynamic>;
+      setState(() {
+        imageCount = data['image_count'];
+      });
+    }
+
+    await FirebaseFirestore.instance.collection('users')
+    .doc(widget.loggedInUser.userID)
+    .collection('longterm_goals')
+    .doc(widget.LT_goal_info.LT_goal_ID)
+    .update({
+      'image_count' : imageCount!+1
+    });
+  }
+
   Future upload(BuildContext context) async {
     final path =
         '${widget.loggedInUser.userID}-${widget.loggedInUser.email}/${widget.goal.ST_goal_name}-${widget.goal.ST_goal_ID}/${basename(pickedImage!.path)}';
@@ -67,10 +91,11 @@ class _add_image_screenState extends State<add_image_screen> {
     final json = {
       'image_ID' : doc.id,
       'image_URL' : imageDownloadURL,
-      'image_desc' : imageDescriptionController.text.trim()
+      'image_desc' : imageDescriptionController.text.trim(),
     };
 
     doc.set(json);
+    await addImageCount();
     Navigator.pop(context);
   }
 

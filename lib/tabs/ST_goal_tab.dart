@@ -32,16 +32,13 @@ class _ST_goal_tabState extends State<ST_goal_tab> {
                 scrollDirection: Axis.horizontal,
                 child: Align(
                     alignment: Alignment.center,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Text(
-                        widget.LT_goal_info.LT_goal_name,
-                        style: TextStyle(
-                            fontFamily: 'LexendDeca-Bold',
-                            fontSize: 20,
-                            color: Colors.black),
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                    child: Text(
+                      widget.LT_goal_info.LT_goal_name,
+                      style: TextStyle(
+                          fontFamily: 'LexendDeca-Bold',
+                          fontSize: 20,
+                          color: Colors.black),
+                      overflow: TextOverflow.ellipsis,
                     )),
               ),
             ),

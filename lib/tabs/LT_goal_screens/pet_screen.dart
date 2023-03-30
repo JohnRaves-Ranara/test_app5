@@ -22,7 +22,7 @@ class _pet_screenState extends State<pet_screen> {
         .doc(widget.loggedInUser.userID);
 
     if (pokemon_level != 10) {
-      if (pokemon_food > 0) {
+      if (pokemon_food >=10) {
         await doc.update({'pokemon_food': pokemon_food - 10});
         if (pokemon_exp < 90) {
           await doc.update({
@@ -51,7 +51,7 @@ class _pet_screenState extends State<pet_screen> {
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return const Center(
-                  child: Text('No data found.'),
+                  child: CircularProgressIndicator(),
                 );
               }
               return ListView.builder(
@@ -73,9 +73,9 @@ class _pet_screenState extends State<pet_screen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Container(
-                            height: 30,
-                            width: 30,
-                            child: Image.asset('assets/apple.png'),
+                            height: 40,
+                            width: 40,
+                            child: Image.asset('assets/apple_pixel.png'),
                           ),
                           SizedBox(
                             width: 10,
@@ -95,9 +95,7 @@ class _pet_screenState extends State<pet_screen> {
                         style: TextStyle(
                             fontFamily: 'LexendDeca-Bold', fontSize: 22),
                       ),
-                      SizedBox(
-                        height: 20,
-                      ),
+                      SizedBox(height: 20,),
                       (pokemon_level > 0 && pokemon_level < 4)
                           ? //1,2,3
                           Center(
@@ -109,7 +107,7 @@ class _pet_screenState extends State<pet_screen> {
                                   children: [
                                     Container(
                                       // color: Colors.orange[100],
-                                      height: MediaQuery.of(context).size.height * 0.17,
+                                      height: MediaQuery.of(context).size.height * 0.18,
                                       child: Image.asset(
                                           'assets/${pokemon_name}lvl1.gif',
                                           fit: BoxFit.contain),
@@ -124,7 +122,7 @@ class _pet_screenState extends State<pet_screen> {
                                   child: Container(
                                     // color: Colors.orange[100],
                                     height: MediaQuery.of(context).size.height *
-                                        0.3,
+                                        0.28,
                                     child: Image.asset(
                                         'assets/${pokemon_name}lvl2.gif',
                                         fit: BoxFit.contain),
@@ -133,9 +131,11 @@ class _pet_screenState extends State<pet_screen> {
                               : (pokemon_level > 6 && pokemon_level < 10)  ? //7,8,9
                                   Center(
                                       child: Container(
+                                        // color: Colors.orange[100],
                                         height:
                                             MediaQuery.of(context).size.height *
-                                                0.3,
+                                                0.28,
+                                    
                                         child: Image.asset(
                                           'assets/${pokemon_name}lvl3.gif',
                                           fit: BoxFit.contain,
@@ -147,7 +147,8 @@ class _pet_screenState extends State<pet_screen> {
                                         // color: Colors.orange[100],
                                         height:
                                             MediaQuery.of(context).size.height *
-                                                0.3,
+                                                0.28,
+                                   
                                         child: Image.asset(
                                             'assets/${pokemon_name}lvl4.gif',
                                             fit: BoxFit.contain,
@@ -155,7 +156,7 @@ class _pet_screenState extends State<pet_screen> {
                                       ),
                                     ),
                       SizedBox(
-                        height: 20,
+                        height: 10,
                       ),
                       Text(
                         (pokemon_level != 10)

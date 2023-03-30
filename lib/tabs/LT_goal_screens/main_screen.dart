@@ -77,12 +77,15 @@ class _main_screenState extends State<main_screen> {
         context: context,
         builder: (context) {
           return AlertDialog(
+            actionsPadding: EdgeInsets.all(15),
             actions: [
               Container(
                         height: 45,
                         width: MediaQuery.of(context).size.width / 3.5,
                         child: OutlinedButton(
+                          
                             style: OutlinedButton.styleFrom(
+                              elevation: 5,
                                 backgroundColor: Colors.white,
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(25))),
@@ -100,6 +103,7 @@ class _main_screenState extends State<main_screen> {
                         width: MediaQuery.of(context).size.width / 3.5,
                         child: OutlinedButton(
                             style: OutlinedButton.styleFrom(
+                              elevation: 5,
                               side: BorderSide(width: 0.5, color: Colors.white),
                               backgroundColor: Colors.red[600],
                                 shape: RoundedRectangleBorder(
@@ -143,6 +147,8 @@ class _main_screenState extends State<main_screen> {
         context: context,
         builder: ((context) {
           return AlertDialog(
+            insetPadding: EdgeInsets.symmetric(horizontal: 10),
+            contentPadding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
             title: Text("Update Long-Term Goal", style: TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 16),),
             content: SingleChildScrollView(
               reverse: true,
@@ -183,7 +189,8 @@ class _main_screenState extends State<main_screen> {
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     child: OutlinedButton(
                       style: OutlinedButton.styleFrom(
-                          side: BorderSide(width: 0.5, color: Colors.black87),
+                        backgroundColor: Colors.blue,
+                        elevation: 5,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15))),
                       child: Row(
@@ -191,13 +198,13 @@ class _main_screenState extends State<main_screen> {
                         children: [
                           Text("Update Goal",
                               style: TextStyle(
-                                  fontFamily: 'LexendDeca-Regular',
-                                  fontSize: 12,
-                                  color: Colors.black87)),
+                                  fontFamily: 'LexendDeca-Bold',
+                                  fontSize: 14,
+                                  color: Colors.white)),
                           Icon(
                             Icons.arrow_forward_ios,
                             size: 12,
-                            color: Colors.black87,
+                            color: Colors.white,
                           )
                         ],
                       ),

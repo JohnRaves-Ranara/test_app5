@@ -13,6 +13,7 @@ import 'package:focused_menu/focused_menu.dart';
 import '../../LT_goal.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'dart:math';
 
 class dashboard_screen extends StatefulWidget {
   final Current_User loggedInUser;
@@ -28,6 +29,29 @@ class _dashboard_screenState extends State<dashboard_screen> {
   TextEditingController goalNameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   int? finishedCount;
+  Map<int, dynamic> quotes = {
+    1: {
+      'quote': 'Believe you can and you\'re halfway there.',
+      'by': 'Theodore Roosevelt'
+    },
+    2: {
+      'quote': 'It does not matter how slowly you go as long as you dont stop',
+      'by': 'Confucius'
+    },
+    3: {
+      'quote': 'Never let anyone tell you what is possible.',
+      'by': 'Shane Parrish'
+    },
+    4: {
+      'quote':
+          'Success is not about never falling, but about rising every time you fall.',
+      'by': 'Michelle Corasanti'
+    },
+    5: {
+      'quote': 'It always seems impossible until it\'s done',
+      'by': 'Nelson Mandela'
+    }
+  };
 
   String status = "ongoing";
   bool isLoading = true;
@@ -70,12 +94,22 @@ class _dashboard_screenState extends State<dashboard_screen> {
         .update({'ST_goal_name': goal_name, 'ST_goal_desc': description});
   }
 
+  updateLT_goal_status() async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.loggedInUser.userID)
+        .collection('longterm_goals')
+        .doc(widget.LT_goal_info.LT_goal_ID)
+        .update({'LT_goal_status': "Finished"});
+  }
+
   //DELETE POPUP
   showDeleteGoalDialog(BuildContext context, goalID) {
     return showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
+            actionsPadding: EdgeInsets.all(15),
             title: Text(
               "Delete Short-Term Goal?",
               style: TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 16),
@@ -142,6 +176,8 @@ class _dashboard_screenState extends State<dashboard_screen> {
         context: context,
         builder: ((context) {
           return AlertDialog(
+            insetPadding: EdgeInsets.symmetric(horizontal: 10),
+            contentPadding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
             title: Text(
               "Update Short-Term Goal",
               style: TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 16),
@@ -185,7 +221,8 @@ class _dashboard_screenState extends State<dashboard_screen> {
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     child: OutlinedButton(
                       style: OutlinedButton.styleFrom(
-                          side: BorderSide(width: 0.5, color: Colors.black87),
+                          backgroundColor: Colors.blue,
+                          elevation: 5,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15))),
                       child: Row(
@@ -193,13 +230,13 @@ class _dashboard_screenState extends State<dashboard_screen> {
                         children: [
                           Text("Update Goal",
                               style: TextStyle(
-                                  fontFamily: 'LexendDeca-Regular',
-                                  fontSize: 12,
-                                  color: Colors.black87)),
+                                  fontFamily: 'LexendDeca-Bold',
+                                  fontSize: 14,
+                                  color: Colors.white)),
                           Icon(
                             Icons.arrow_forward_ios,
                             size: 12,
-                            color: Colors.black87,
+                            color: Colors.white,
                           )
                         ],
                       ),
@@ -293,11 +330,68 @@ class _dashboard_screenState extends State<dashboard_screen> {
   //       });
   // }
 
-  showFinishLT_GoalConfirmDialog(BuildContext context, goalID) {
+  Future<Map<String, int>> calculateRewards() async {
+    print("NISULOD SYA SA CALCULATE");
+    DateTime? startDate;
+    DateTime endDate = DateTime.now();
+    int? imageCount;
+    DocumentReference docRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.loggedInUser.userID);
+
+    DocumentSnapshot docSnap = await docRef
+        .collection('longterm_goals')
+        .doc(widget.LT_goal_info.LT_goal_ID)
+        .get();
+
+    if (docSnap.exists) {
+      final data = docSnap.data()! as Map<String, dynamic>;
+      setState(() {
+        //get startdate and imagecount
+        startDate = DateTime.parse(data['startDate']);
+        imageCount = data['image_count'];
+        
+      });
+      //update enddate to current datetime
+      await docRef
+          .collection('longterm_goals')
+          .doc(widget.LT_goal_info.LT_goal_ID)
+          .update({'endDate': endDate});
+    }
+    Duration startEndDifference = endDate.difference(startDate!);
+    int differenceDays = startEndDifference.inDays;
+    int result = differenceDays + imageCount!;
+
+    Map<String, int> rewards = {
+      "goal_duration": differenceDays,
+      "total_documentations": imageCount!,
+      "reward": result
+    };
+
+    //add pokemon food
+    DocumentSnapshot pokemonSnap = await docRef
+        .collection('pokemon')
+        .doc(widget.loggedInUser.userID)
+        .get();
+    if (pokemonSnap.exists) {
+      final pokemonData = pokemonSnap.data()! as Map<String, dynamic>;
+      final pokemonFood = pokemonData['pokemon_food'];
+      await docRef
+          .collection('pokemon')
+          .doc(widget.loggedInUser.userID)
+          .update({'pokemon_food': pokemonFood + result});
+    }
+    print('NAHUMAN ANG CALCULAET');
+    return rewards;
+  }
+
+  showFinishLT_GoalConfirmDialog(BuildContext contexts, goalID) {
     return showDialog(
+        barrierDismissible: false,
         context: context,
         builder: (context) {
           return AlertDialog(
+            actionsPadding: EdgeInsets.all(15),
             title: Text(
               "Confirm Long-Term Goal Completion?",
               style: TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 16),
@@ -336,10 +430,20 @@ class _dashboard_screenState extends State<dashboard_screen> {
                       style: TextStyle(
                           fontFamily: 'LexendDeca-Regular', fontSize: 12),
                     ),
-                    onPressed: () => {
-                          Navigator.pop(context),
-                          congratsAndRewardsDialog(context),
-                        }),
+                    onPressed: () async {
+                      Navigator.pop(context);
+                      //for testing
+                      // Map<String, int> k = {
+                      //   'goal_duration': 90,
+                      //   'total_documentations': 90,
+                      //   'reward': 180
+                      // };
+                      //comment this out for testing
+                      Map<String, int> rewards = await calculateRewards();
+                      await updateLT_goal_status();
+                      //comment this out for testing
+                      congratsAndRewardsDialog(contexts, rewards);
+                    }),
               ),
             ],
             content: SingleChildScrollView(
@@ -350,6 +454,7 @@ class _dashboard_screenState extends State<dashboard_screen> {
                     "Are you sure you want to complete this Long-Term Goal? Once completed, it will be added to the Finished Goals Tab in view-only mode.",
                     style: TextStyle(
                         fontFamily: 'LexendDeca-Regular', fontSize: 14),
+                    textAlign: TextAlign.justify,
                   ),
                   SizedBox(
                     height: 20,
@@ -398,37 +503,180 @@ class _dashboard_screenState extends State<dashboard_screen> {
     }
   }
 
-  congratsAndRewardsDialog(BuildContext context) {
+  congratsAndRewardsDialog(BuildContext context, Map<String, int> reward) {
+    int random = Random().nextInt(quotes.length + 1);
+    random = random.clamp(1, 6);
+
     return showDialog(
+        // barrierDismissible: false,
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text("Hooray!"),
-            content: Text(
-                "You have completed '${widget.LT_goal_info.LT_goal_name}'! Keep up the good work!"),
-            actions: [
-              Container(
-                height: 45,
-                width: MediaQuery.of(context).size.width / 3.5,
-                child: OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: Colors.black87, width: 0.5),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25))),
-                  onPressed: () async{
-                    await FirebaseFirestore.instance.collection('users')
-                    .doc(widget.loggedInUser.userID)
-                    .collection('longterm_goals')
-                    .doc(widget.LT_goal_info.LT_goal_ID)
-                    .update({
-                      'LT_goal_status' : 'Finished'
-                    });
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => LT_goal_tab(loggedInUser: widget.loggedInUser)));
-                  },
-                  child: Text("OK"),
-                ),
-              )
-            ],
+            actionsPadding: EdgeInsets.all(15),
+            insetPadding: EdgeInsets.symmetric(horizontal: 10),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Text(
+                    "CONGRATULATIONS!",
+                    style:
+                        TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 16),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Text(
+                    "You have completed the Long-Term Goal:",
+                    style: TextStyle(
+                        fontFamily: 'LexendDeca-Regular', fontSize: 14),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    "${widget.LT_goal_info.LT_goal_name}",
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style:
+                        TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 18),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(
+                    height: 50,
+                  ),
+                  Text(
+                    quotes[random]['quote'],
+                    style: TextStyle(
+                        fontFamily: 'LexendDeca-Regular', fontSize: 14),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    "- ${quotes[random]['by']}",
+                    style: TextStyle(
+                        fontFamily: 'LexendDeca-Regular', fontSize: 14),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(
+                    height: 60,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        // color: Colors.blue[100],
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Total duration (in days):",
+                              style: TextStyle(
+                                  fontFamily: 'LexendDeca-Regular',
+                                  fontSize: 14),
+                              textAlign: TextAlign.start,
+                            ),
+                            Text(
+                              "Total documentations:",
+                              style: TextStyle(
+                                  fontFamily: 'LexendDeca-Regular',
+                                  fontSize: 14),
+                              textAlign: TextAlign.start,
+                            ),
+                            Row(
+                              children: [
+                                Container(
+                                    height: 30,
+                                    width: 30,
+                                    child:
+                                        Image.asset('assets/apple_pixel.png')),
+                                Text(
+                                  "Earned:",
+                                  style: TextStyle(
+                                      fontFamily: 'LexendDeca-Regular',
+                                      fontSize: 14),
+                                  textAlign: TextAlign.start,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        // color: Colors.orange[100],
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              "${reward['goal_duration']}",
+                              style: TextStyle(
+                                  fontFamily: 'LexendDeca-Regular',
+                                  fontSize: 14),
+                              textAlign: TextAlign.start,
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              "${reward['total_documentations']}",
+                              style: TextStyle(
+                                  fontFamily: 'LexendDeca-Regular',
+                                  fontSize: 14),
+                              textAlign: TextAlign.start,
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              "${reward['reward']}",
+                              style: TextStyle(
+                                  fontFamily: 'LexendDeca-Regular',
+                                  fontSize: 14),
+                              textAlign: TextAlign.start,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    height: 45,
+                    width: MediaQuery.of(context).size.width / 3.5,
+                    child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            elevation: 5,
+                            backgroundColor: AppColors().red,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(25))),
+                        child: Text(
+                          "OK",
+                          style: TextStyle(
+                              fontFamily: 'LexendDeca-Regular', fontSize: 12),
+                        ),
+                        onPressed: () async {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LT_goal_tab(
+                                      loggedInUser: widget.loggedInUser)));
+                        }),
+                  ),
+                ],
+              ),
+            ),
           );
         });
   }
@@ -483,14 +731,20 @@ class _dashboard_screenState extends State<dashboard_screen> {
                         side: BorderSide(width: 0.5, color: Colors.black87),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15))),
-                    onPressed: () => {
+                    onPressed: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => addGoalScreen(
                                     loggedInUser: widget.loggedInUser,
                                     LT_goal_info: widget.LT_goal_info,
-                                  )))
+                                  )));
+                      // Map<String, int> k = {
+                      //   'goal_duration': 10,
+                      //   'total_documentations': 50,
+                      //   'reward': 60
+                      // };
+                      // congratsAndRewardsDialog(context, k);
                     },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -675,6 +929,7 @@ class _dashboard_screenState extends State<dashboard_screen> {
         .collection('longterm_goals')
         .doc(widget.LT_goal_info.LT_goal_ID)
         .collection('shortterm_goals')
+        .orderBy("creationDate", descending: false)
         .snapshots()
         .map((snapshot) => snapshot.docs
             .map((doc) => ST_goal(

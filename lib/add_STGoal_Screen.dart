@@ -2,11 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'Current_User.dart';
 import 'LT_goal.dart';
-import 'ST_goal.dart';
 import 'theme/app_colors.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'dart:io';
 
 class addGoalScreen extends StatefulWidget {
   final Current_User loggedInUser;
@@ -72,11 +69,16 @@ class _addGoalScreenState extends State<addGoalScreen> {
     String goalName;
     return SafeArea(
         child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            iconTheme: IconThemeData(color: Colors.black),
+          ),
       body: SingleChildScrollView(
         reverse: true,
         child: Column(
           children: [
-            SizedBox(height: MediaQuery.of(context).size.height*0.155,),
+            SizedBox(height: MediaQuery.of(context).size.height*0.1,),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: TextField(
@@ -161,7 +163,8 @@ class _addGoalScreenState extends State<addGoalScreen> {
       'ST_goal_name': goal_name,
       'ST_goal_ID': docGoal.id,
       'ST_goal_desc': description,
-      'ST_goal_status': "Ongoing"
+      'ST_goal_status': "Ongoing",
+      'creationDate' : DateTime.now().toString(),
     };
 
     await docGoal.set(json);
