@@ -5,13 +5,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
-import 'package:test_app5/tabs/ST_goal_screens/dashboard_screen.dart';
+import 'package:test_app5/tabs/ST_goal_screens/ST_goals_screen.dart';
 import '../../Current_User.dart';
 import '../../LT_goal.dart';
 import '../ST_goal_tab.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
+
+import '../comp_ST_goal_tab.dart';
 
 class completed_LT_goals extends StatefulWidget {
   final Current_User loggedInUser;
@@ -48,6 +50,7 @@ class _completed_LT_goalsState extends State<completed_LT_goals> {
     imageDownloadURL = await storageRef.getDownloadURL();
     return imageDownloadURL!;
   }
+
   Future deleteGoal({required String LT_goal_ID}) async {
     final docGoal = FirebaseFirestore.instance
         .collection('users')
@@ -59,7 +62,9 @@ class _completed_LT_goalsState extends State<completed_LT_goals> {
   }
 
   Future updateGoal(
-      {required String goal_name, required String description, required String LT_goal_ID}) async {
+      {required String goal_name,
+      required String description,
+      required String LT_goal_ID}) async {
     print("update!");
     final docGoal = FirebaseFirestore.instance
         .collection('users')
@@ -79,45 +84,48 @@ class _completed_LT_goalsState extends State<completed_LT_goals> {
           return AlertDialog(
             actions: [
               Container(
-                        height: 45,
-                        width: MediaQuery.of(context).size.width / 3.5,
-                        child: OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(25))),
-                            child: Text(
-                              "Cancel",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: 'LexendDeca-Regular',
-                                  fontSize: 12),
-                            ),
-                            onPressed: () => {Navigator.pop(context)}),
-                      ),
-                      Container(
-                        height: 45,
-                        width: MediaQuery.of(context).size.width / 3.5,
-                        child: OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              side: BorderSide(width: 0.5, color: Colors.white),
-                              backgroundColor: Colors.red[600],
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(25))),
-                            child: Text(
-                              "Delete",
-                              style: TextStyle(
-                                  fontFamily: 'LexendDeca-Regular',
-                                  fontSize: 12,
-                                  color: Colors.white),
-                            ),
-                            onPressed: () => {
-                                  deleteGoal(LT_goal_ID: goalID),
-                                  Navigator.pop(context)
-                                }),
-                      ),
+                height: 45,
+                width: MediaQuery.of(context).size.width / 3.5,
+                child: OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25))),
+                    child: Text(
+                      "Cancel",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontFamily: 'LexendDeca-Regular',
+                          fontSize: 12),
+                    ),
+                    onPressed: () => {Navigator.pop(context)}),
+              ),
+              Container(
+                height: 45,
+                width: MediaQuery.of(context).size.width / 3.5,
+                child: OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                        side: BorderSide(width: 0.5, color: Colors.white),
+                        backgroundColor: Colors.red[600],
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25))),
+                    child: Text(
+                      "Delete",
+                      style: TextStyle(
+                          fontFamily: 'LexendDeca-Regular',
+                          fontSize: 12,
+                          color: Colors.white),
+                    ),
+                    onPressed: () => {
+                          deleteGoal(LT_goal_ID: goalID),
+                          Navigator.pop(context)
+                        }),
+              ),
             ],
-            title: Text("Delete Long-Term Goal?", style: TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 16),),
+            title: Text(
+              "Delete Long-Term Goal?",
+              style: TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 16),
+            ),
             content: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -143,7 +151,10 @@ class _completed_LT_goalsState extends State<completed_LT_goals> {
         context: context,
         builder: ((context) {
           return AlertDialog(
-            title: Text("Update Long-Term Goal", style: TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 16),),
+            title: Text(
+              "Update Long-Term Goal",
+              style: TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 16),
+            ),
             content: SingleChildScrollView(
               reverse: true,
               child: Column(
@@ -228,7 +239,15 @@ class _completed_LT_goalsState extends State<completed_LT_goals> {
           child: StreamBuilder(
               stream: readLTgoals(),
               builder: (context, snapshot) {
-                if (snapshot.hasData) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(
+                    child: Text("No Completed Long-Term Goals yet."),
+                  );
+                } else {
                   final goals = snapshot.data!;
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -238,10 +257,6 @@ class _completed_LT_goalsState extends State<completed_LT_goals> {
                       physics: BouncingScrollPhysics(),
                       children: goals.map(buildLTGoals).toList(),
                     ),
-                  );
-                } else {
-                  return Center(
-                    child: Text("No data found."),
                   );
                 }
               }),
@@ -256,7 +271,7 @@ class _completed_LT_goalsState extends State<completed_LT_goals> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => ST_goal_tab(
+                builder: (context) => comp_ST_goal_tab(
                     loggedInUser: widget.loggedInUser,
                     LT_goal_info: LT_goal_info)));
       },
@@ -277,7 +292,6 @@ class _completed_LT_goalsState extends State<completed_LT_goals> {
               color: Colors.white,
             )),
       ],
-
       child: Padding(
           padding: const EdgeInsets.all(5.0),
           child: Container(
@@ -355,9 +369,7 @@ class _completed_LT_goalsState extends State<completed_LT_goals> {
                 LT_goal_desc: doc.data()['LT_goal_desc'],
                 LT_goal_name: doc.data()['LT_goal_name'],
                 LT_goal_banner: doc.data()['LT_goal_banner'],
-                LT_goal_status: doc.data()['LT_goal_status']
-                ))
-                
+                LT_goal_status: doc.data()['LT_goal_status']))
             .toList());
   }
 }

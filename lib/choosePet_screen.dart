@@ -1,11 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:test_app5/showPetConfirmed_screen.dart';
 import 'Current_User.dart';
 import 'tabs/LT_goal_tab.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class choosePet_Screen extends StatefulWidget {
   Current_User loggedInUser;
-
   choosePet_Screen({required this.loggedInUser});
 
   @override
@@ -13,82 +14,11 @@ class choosePet_Screen extends StatefulWidget {
 }
 
 class _choosePet_ScreenState extends State<choosePet_Screen> {
-  String? pokemon_name;
   int? chosenValue;
-  showPetConfirmed(BuildContext context) async {
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            content: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "You have chosen ${pokemon_name}! He will accompany you in your journey of accomplishing your life goals.",
-                    style: TextStyle(
-                        fontFamily: 'LexendDeca-Regular', fontSize: 14),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Container(
-                      height: 200,
-                      width: 200,
-                      child: Image.asset('assets/${pokemon_name}lvl1.gif')),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Text(
-                    "Welcome to VisioLife. Where your goals are brought to life.",
-                    style: TextStyle(
-                        fontFamily: 'LexendDeca-Regular', fontSize: 14),
-                  ),
-                  SizedBox(
-                    height: 50,
-                  ),
-                  Container(
-                    height: 45,
-                    width: MediaQuery.of(context).size.width / 3.5,
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            elevation: 5,
-                            backgroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(25))),
-                        child: Text(
-                          "Confirm",
-                          style: TextStyle(
-                              fontFamily: 'LexendDeca-Regular', fontSize: 12),
-                        ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => LT_goal_tab(
-                                      loggedInUser: Current_User(
-                                          email: widget.loggedInUser.email,
-                                          password:
-                                              widget.loggedInUser.password,
-                                          userID: widget.loggedInUser.userID,
-                                          username:
-                                              widget.loggedInUser.username,
-                                          pet_name: pokemon_name!))));
-                        }),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  )
-                ],
-              ),
-            ),
-          );
-        });
-  }
-
+  String? pokemon_name;
   showConfirmPet(BuildContext context) async {
     return showDialog(
+      barrierDismissible: false,
         context: context,
         builder: (context) {
           return AlertDialog(
@@ -121,7 +51,7 @@ class _choosePet_ScreenState extends State<choosePet_Screen> {
                 child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                         elevation: 5,
-                        backgroundColor: Colors.white,
+                        backgroundColor: Colors.blue,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(25))),
                     child: Text(
@@ -129,7 +59,7 @@ class _choosePet_ScreenState extends State<choosePet_Screen> {
                       style: TextStyle(
                           fontFamily: 'LexendDeca-Regular',
                           fontSize: 12,
-                          color: Colors.black),
+                          color: Colors.white),
                     ),
                     onPressed: () async {
                       if (chosenValue == 1) {
@@ -142,7 +72,7 @@ class _choosePet_ScreenState extends State<choosePet_Screen> {
                         });
                       } else if (chosenValue == 3) {
                         setState(() {
-                          pokemon_name = "beldum";
+                          pokemon_name = "squirtle";
                         });
                       } else if (chosenValue == 4) {
                         setState(() {
@@ -162,7 +92,12 @@ class _choosePet_ScreenState extends State<choosePet_Screen> {
                           .collection('users')
                           .doc(widget.loggedInUser.userID)
                           .update({"pokemon_name": pokemon_name});
-                      showPetConfirmed(context);
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => showPetConfirmed_screen(
+                                  loggedInUser: widget.loggedInUser,
+                                  pokemon_name: pokemon_name!)));
                     }),
               ),
             ],

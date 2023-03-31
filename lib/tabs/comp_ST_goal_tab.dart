@@ -6,17 +6,19 @@ import 'package:test_app5/Current_User.dart';
 import 'package:test_app5/tabs/ST_goal_screens/ST_goals_screen.dart';
 import 'package:test_app5/tabs/ST_goal_screens/LT_note_screen.dart';
 import '../LT_goal.dart';
+import 'ST_goal_screens/comp_LT_note_screen.dart';
+import 'ST_goal_screens/comp_ST_goals_screen.dart';
 
-class ST_goal_tab extends StatefulWidget {
+class comp_ST_goal_tab extends StatefulWidget {
   final Current_User loggedInUser;
   final LT_goal LT_goal_info;
-  ST_goal_tab({required this.loggedInUser, required this.LT_goal_info});
+  comp_ST_goal_tab({required this.loggedInUser, required this.LT_goal_info});
 
   @override
-  State<ST_goal_tab> createState() => _ST_goal_tabState();
+  State<comp_ST_goal_tab> createState() => _comp_ST_goal_tabState();
 }
 
-class _ST_goal_tabState extends State<ST_goal_tab> {
+class _comp_ST_goal_tabState extends State<comp_ST_goal_tab> {
   int? groupvalue = 0;
   @override
   Widget build(BuildContext context) {
@@ -72,10 +74,10 @@ class _ST_goal_tabState extends State<ST_goal_tab> {
               ),
             ),
             (groupvalue == 0)
-                ? dashboard_screen(
+                ? comp_dashboard_screen(
                     loggedInUser: widget.loggedInUser,
                     LT_goal_info: widget.LT_goal_info)
-                : LT_notes_screen(
+                : comp_LT_note_screen(
                     loggedInUser: widget.loggedInUser,
                     LT_goal_info: widget.LT_goal_info,
                   )

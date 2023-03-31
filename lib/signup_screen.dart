@@ -17,6 +17,7 @@ class signup_screen extends StatefulWidget {
 }
 
 class _signup_screenState extends State<signup_screen> {
+  bool isSigningIn = false;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
@@ -45,7 +46,11 @@ class _signup_screenState extends State<signup_screen> {
   }
   
   Future signUp() async {
-    final FirebaseAuth auth = FirebaseAuth.instance;
+    setState(() {
+      isSigningIn = true;
+    });
+    try{
+      final FirebaseAuth auth = FirebaseAuth.instance;
     await auth.createUserWithEmailAndPassword(
         email: emailController.text.trim(),
         password: passwordController.text.trim());
@@ -77,6 +82,55 @@ class _signup_screenState extends State<signup_screen> {
     passwordController.clear();
     usernameController.clear();
     Navigator.push(context, MaterialPageRoute(builder: (context)=> choosePet_Screen(loggedInUser: loggedInUser)));
+    } on FirebaseAuthException catch (e){
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            actionsPadding: EdgeInsets.all(15),
+            insetPadding: EdgeInsets.symmetric(horizontal: 10),
+            actions: [
+              Container(
+                height: 45,
+                width: MediaQuery.of(context).size.width / 3.5,
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        elevation: 5,
+                        backgroundColor: Colors.blue,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25))),
+                    child: Text(
+                      "OK",
+                      style: TextStyle(
+                          fontFamily: 'LexendDeca-BOLD', fontSize: 14),
+                    ),
+                    onPressed: () => {Navigator.pop(context)}),
+              ),
+            ],
+            title: Text("ERROR", style: TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 16),),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    e.message.toString(),
+                    style: TextStyle(
+                        fontFamily: 'LexendDeca-Regular', fontSize: 16),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+    }finally{
+      setState(() {
+      isSigningIn = false;
+    });
+    }
   }
 
   @override
@@ -154,7 +208,7 @@ class _signup_screenState extends State<signup_screen> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10)),
                             backgroundColor: AppColors().red),
-                    onPressed: () => {signUp()},
+                    onPressed:isSigningIn ? null : signUp,
                     child: Text(
                       "SIGNUP",
                       style: TextStyle(

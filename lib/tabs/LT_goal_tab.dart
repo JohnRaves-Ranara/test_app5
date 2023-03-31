@@ -1,9 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:test_app5/Current_User.dart';
 import 'package:test_app5/add_LTgoal_screen.dart';
 import 'package:test_app5/tabs/LT_goal_screens/completed_LT_goals.dart';
-import 'LT_goal_screens/main_screen.dart';
+import 'LT_goal_screens/LT_goals_screen.dart';
 import 'LT_goal_screens/pet_screen.dart';
 import 'LT_goal_screens/user_profile_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -151,6 +152,10 @@ class _LT_goal_tabState extends State<LT_goal_tab> {
                     ListTile(
                       title: Text("Profile", style: TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 18),),
                       onTap: ()=> Navigator.push(context, MaterialPageRoute(builder: (context)=> user_profile_screen(loggedInUser: widget.loggedInUser))),
+                    ),
+                    ListTile(
+                      title: Text("Sign Out", style: TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 18),),
+                      onTap: ()async{ await FirebaseAuth.instance.signOut();},
                     )
                   ],
                 ),

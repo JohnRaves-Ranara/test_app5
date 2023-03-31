@@ -32,42 +32,37 @@ class _add_image_screenState extends State<add_image_screen> {
   TextEditingController imageDescriptionController = TextEditingController();
   String compressedImagePath = "/storage/emulated/0/Download";
 
-  Future<void> compressImage() async {
-    if (pickedImage == null) return null;
-
-    final compressedFile = await FlutterImageCompress.compressAndGetFile(
-        pickedImage!.path,
-        "${compressedImagePath}/${basename(pickedImage!.path)}");
-
-    if (compressedFile != null) {
-      setState(() => {
-            compressedImage = compressedFile,
-          });
-    }
+  Future<Uint8List> compressImage(File file) async {
+    print("Original image file size: ${await file.length()}");
+    Uint8List imageBytes = await file.readAsBytes();
+    final Uint8List compressedFile =
+        await FlutterImageCompress.compressWithList(imageBytes, quality: 15);
+    print("Compressed image file size: ${compressedFile.length}");
+    return compressedFile;
   }
 
-  addImageCount()async{
+  addImageCount() async {
     int? imageCount;
-    DocumentSnapshot docSnap = await FirebaseFirestore.instance.collection('users')
-    .doc(widget.loggedInUser.userID)
-    .collection('longterm_goals')
-    .doc(widget.LT_goal_info.LT_goal_ID)
-    .get();
+    DocumentSnapshot docSnap = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.loggedInUser.userID)
+        .collection('longterm_goals')
+        .doc(widget.LT_goal_info.LT_goal_ID)
+        .get();
 
-    if(docSnap.exists){
+    if (docSnap.exists) {
       final data = docSnap.data()! as Map<String, dynamic>;
       setState(() {
         imageCount = data['image_count'];
       });
     }
 
-    await FirebaseFirestore.instance.collection('users')
-    .doc(widget.loggedInUser.userID)
-    .collection('longterm_goals')
-    .doc(widget.LT_goal_info.LT_goal_ID)
-    .update({
-      'image_count' : imageCount!+1
-    });
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.loggedInUser.userID)
+        .collection('longterm_goals')
+        .doc(widget.LT_goal_info.LT_goal_ID)
+        .update({'image_count': imageCount! + 1});
   }
 
   Future upload(BuildContext context) async {
@@ -75,23 +70,31 @@ class _add_image_screenState extends State<add_image_screen> {
         '${widget.loggedInUser.userID}-${widget.loggedInUser.email}/${widget.goal.ST_goal_name}-${widget.goal.ST_goal_ID}/${basename(pickedImage!.path)}';
     final file = File(pickedImage!.path);
     final storageRef = FirebaseStorage.instance.ref().child(path);
-    await storageRef.putFile(file);
+
+    //compress image
+    final compressedImageFile = await compressImage(file);
+
+    //upload image
+    await storageRef.putData(compressedImageFile);
+    // print("Image Quality 100: ${await file.length()}");
+    // await storageRef.putFile(file);
     String imageDownloadURL = await storageRef.getDownloadURL();
-    
+
     final DocumentReference doc = FirebaseFirestore.instance
-    .collection("users")
-    .doc(widget.loggedInUser.userID)
-    .collection("longterm_goals")
-    .doc(widget.LT_goal_info.LT_goal_ID)
-    .collection("shortterm_goals")
-    .doc(widget.goal.ST_goal_ID)
-    .collection("images")
-    .doc();
+        .collection("users")
+        .doc(widget.loggedInUser.userID)
+        .collection("longterm_goals")
+        .doc(widget.LT_goal_info.LT_goal_ID)
+        .collection("shortterm_goals")
+        .doc(widget.goal.ST_goal_ID)
+        .collection("images")
+        .doc();
 
     final json = {
-      'image_ID' : doc.id,
-      'image_URL' : imageDownloadURL,
-      'image_desc' : imageDescriptionController.text.trim(),
+      'image_ID': doc.id,
+      'image_URL': imageDownloadURL,
+      'image_desc': imageDescriptionController.text.trim(),
+      'creationDate' : DateTime.now().toString()
     };
 
     doc.set(json);
@@ -142,7 +145,7 @@ class _add_image_screenState extends State<add_image_screen> {
                         child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                                 elevation: 5,
-                                backgroundColor: AppColors().red,
+                                backgroundColor: Colors.blue,
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(25))),
                             child: Text(
@@ -178,12 +181,13 @@ class _add_image_screenState extends State<add_image_screen> {
         actions: [
           InkWell(
               splashColor: Colors.grey,
-              onTap: () => {
-                    if (pickedImage == null)
-                      {showValidationDialog(context)}
-                    else
-                      {upload(context)}
-                  },
+              onTap: () {
+                if (pickedImage == null) {
+                  showValidationDialog(context);
+                } else {
+                  upload(context);
+                }
+              },
               child: Container(
                 height: 50,
                 width: 100,

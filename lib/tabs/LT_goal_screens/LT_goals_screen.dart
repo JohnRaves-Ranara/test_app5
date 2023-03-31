@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
-import 'package:test_app5/tabs/ST_goal_screens/dashboard_screen.dart';
+import 'package:test_app5/tabs/ST_goal_screens/ST_goals_screen.dart';
 import '../../Current_User.dart';
 import '../../LT_goal.dart';
 import '../ST_goal_tab.dart';
@@ -235,7 +235,13 @@ class _main_screenState extends State<main_screen> {
           child: StreamBuilder(
               stream: readLTgoals(),
               builder: (context, snapshot) {
-                if (snapshot.hasData) {
+                if(snapshot.connectionState == ConnectionState.waiting){
+                  return Center(child: CircularProgressIndicator(),);
+                }
+                else if(!snapshot.hasData || snapshot.data!.isEmpty){
+                  return Center(child: Text("No Long-Term Goals yet."),);
+                }
+                else{
                   final goals = snapshot.data!;
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -245,10 +251,6 @@ class _main_screenState extends State<main_screen> {
                       physics: BouncingScrollPhysics(),
                       children: goals.map(buildLTGoals).toList(),
                     ),
-                  );
-                } else {
-                  return Center(
-                    child: Text("No data found."),
                   );
                 }
               }),

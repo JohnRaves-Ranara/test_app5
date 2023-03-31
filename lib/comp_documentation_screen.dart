@@ -7,24 +7,25 @@ import 'LT_goal.dart';
 import 'ST_goal.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'add_image_screen.dart';
+import 'comp_open_image_screen.dart';
 import 'theme/app_colors.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
-class documentation_screen extends StatefulWidget {
+class comp_documentation_screen extends StatefulWidget {
   final ST_goal goal;
   final Current_User loggedInUser;
   final LT_goal LT_goal_info;
-  const documentation_screen(
+  const comp_documentation_screen(
       {required this.goal,
       required this.loggedInUser,
       required this.LT_goal_info});
 
   @override
-  State<documentation_screen> createState() => _documentation_screenState();
+  State<comp_documentation_screen> createState() => _comp_documentation_screenState();
 }
 
-class _documentation_screenState extends State<documentation_screen> {
+class _comp_documentation_screenState extends State<comp_documentation_screen> {
   //OPEN IMAGE POPUP
   openImage(BuildContext context, String imageURL, String imageDescription) {
     return showDialog(
@@ -269,15 +270,7 @@ class _documentation_screenState extends State<documentation_screen> {
                         side: BorderSide(width: 0.5, color: Colors.black87),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15))),
-                    onPressed: () => {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => add_image_screen(
-                                  LT_goal_info: widget.LT_goal_info,
-                                  goal: widget.goal,
-                                  loggedInUser: widget.loggedInUser)))
-                    },
+                    onPressed: null,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: Column(
@@ -348,7 +341,7 @@ class _documentation_screenState extends State<documentation_screen> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => open_image_screen(
+                                    builder: (context) => comp_open_image_screen(
                                         image_ID: imageID,
                                         image_desc: imageDescription,
                                         imageURL: imageURL,
@@ -356,20 +349,7 @@ class _documentation_screenState extends State<documentation_screen> {
                                         ST_goal_info: widget.goal,
                                         LT_goal_info: widget.LT_goal_info)))
                           },
-                          menuItems: [
-                            FocusedMenuItem(
-                              title: Text(
-                                'Delete',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: 'LexendDeca-Regular'),
-                              ),
-                              backgroundColor: AppColors().red,
-                              trailingIcon: Icon(Icons.delete),
-                              onPressed: () =>
-                                  {showDeleteImageDialog(context, imageID)},
-                            ),
-                          ],
+                          menuItems: [],
                           child: Padding(
                               padding: const EdgeInsets.all(8),
                               child: ClipRRect(

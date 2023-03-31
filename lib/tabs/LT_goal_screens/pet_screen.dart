@@ -13,7 +13,13 @@ class pet_screen extends StatefulWidget {
 }
 
 class _pet_screenState extends State<pet_screen> {
+  String? pokemon_name;
 
+  @override
+  void initState(){
+    super.initState();
+    getPokemonNameFinal();
+  }
   void feedPet(int pokemon_level, int pokemon_exp, int pokemon_food) async {
     DocumentReference doc = FirebaseFirestore.instance
         .collection('users')
@@ -36,6 +42,23 @@ class _pet_screenState extends State<pet_screen> {
     }
   }
 
+  Future<String> getPokemonName(String id) async {
+    DocumentSnapshot snapshot =
+        await FirebaseFirestore.instance.collection('users').doc(id).get();
+    String? pet_name;
+    if (snapshot.exists) {
+      final data = snapshot.data()! as Map<String, dynamic>;
+      pet_name = data['pokemon_name']!;
+    }
+    return pet_name!;
+  }
+
+  void getPokemonNameFinal(){
+    setState() async {
+      pokemon_name = await getPokemonName(widget.loggedInUser.userID);
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -55,14 +78,13 @@ class _pet_screenState extends State<pet_screen> {
                 );
               }
               return ListView.builder(
+                physics: NeverScrollableScrollPhysics(),
                 itemCount: snapshot.data!.docs.length,
                 itemBuilder: (context, index) {
                   int pokemon_level =
                       snapshot.data!.docs[index]['pokemon_level'];
                   int pokemon_exp = snapshot.data!.docs[index]['pokemon_exp'];
                   int pokemon_food = snapshot.data!.docs[index]['pokemon_food'];
-
-                  String pokemon_name = widget.loggedInUser.pet_name;
 
                   return Column(
                     children: [

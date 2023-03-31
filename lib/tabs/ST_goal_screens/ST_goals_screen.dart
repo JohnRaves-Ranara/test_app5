@@ -4,7 +4,7 @@ import 'package:focused_menu/modals.dart';
 import 'package:test_app5/Current_User.dart';
 import 'package:test_app5/add_STGoal_Screen.dart';
 import 'package:test_app5/login_screen.dart';
-import 'package:test_app5/tabs/LT_goal_screens/main_screen.dart';
+import 'package:test_app5/tabs/LT_goal_screens/LT_goals_screen.dart';
 import 'package:test_app5/tabs/LT_goal_tab.dart';
 import '../../ST_goal.dart';
 import '../../documentation_screen.dart';
@@ -53,7 +53,6 @@ class _dashboard_screenState extends State<dashboard_screen> {
     }
   };
 
-  String status = "ongoing";
   bool isLoading = true;
 
   @override
@@ -350,21 +349,27 @@ class _dashboard_screenState extends State<dashboard_screen> {
         //get startdate and imagecount
         startDate = DateTime.parse(data['startDate']);
         imageCount = data['image_count'];
-        
       });
       //update enddate to current datetime
       await docRef
           .collection('longterm_goals')
           .doc(widget.LT_goal_info.LT_goal_ID)
-          .update({'endDate': endDate});
+          .update({'endDate': endDate.toString()});
     }
+    print("START DATE: ${startDate}");
+    print("END DATE: ${endDate}");
+
+    //rewards calculation
     Duration startEndDifference = endDate.difference(startDate!);
     int differenceDays = startEndDifference.inDays;
-    int result = differenceDays + imageCount!;
+    print("DIFFERENCE IN DAYS: ${differenceDays}");
+    int rewardBaseMultiplier = 5;
+    int result = rewardBaseMultiplier * (differenceDays + imageCount!);
 
     Map<String, int> rewards = {
       "goal_duration": differenceDays,
       "total_documentations": imageCount!,
+      "base_reward_multiplier": rewardBaseMultiplier,
       "reward": result
     };
 
@@ -392,6 +397,8 @@ class _dashboard_screenState extends State<dashboard_screen> {
         builder: (context) {
           return AlertDialog(
             actionsPadding: EdgeInsets.all(15),
+            insetPadding: EdgeInsets.symmetric(horizontal:20),
+            titlePadding: EdgeInsets.only(left: 20, right: 20, top: 40),
             title: Text(
               "Confirm Long-Term Goal Completion?",
               style: TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 16),
@@ -478,29 +485,100 @@ class _dashboard_screenState extends State<dashboard_screen> {
     update_status.update({'ST_goal_status': 'Ongoing'});
   }
 
+  showMarkAsFinishedNotAllowedDialog(){
+    return showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            actionsPadding: EdgeInsets.all(15),
+            insetPadding: EdgeInsets.symmetric(horizontal: 20),
+            title: Text(
+              "Error",
+              style: TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 16),
+            ),
+            actions: [
+              Container(
+                height: 45,
+                width: MediaQuery.of(context).size.width / 3.5,
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        elevation: 5,
+                        backgroundColor: Colors.blue,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25))),
+                    child: Text(
+                      "OK",
+                      style: TextStyle(
+                          fontFamily: 'LexendDeca-Regular', fontSize: 12),
+                    ),
+                    onPressed: ()
+                        {
+                          Navigator.pop(context);
+                        }),
+              ),
+            ],
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Short-Term Goals without documentation cannot be marked as Finished.",
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                        fontFamily: 'LexendDeca-Regular', fontSize: 14),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
   markAsFinished(ST_goal ST_goal_info) async {
+    //doc reference to ST goal collection
     CollectionReference ST_goal_collection = FirebaseFirestore.instance
         .collection('users')
         .doc(widget.loggedInUser.userID)
         .collection('longterm_goals')
         .doc(widget.LT_goal_info.LT_goal_ID)
         .collection('shortterm_goals');
-    await ST_goal_collection.doc(ST_goal_info.ST_goal_ID)
-        .update({'ST_goal_status': 'Finished'});
 
-    QuerySnapshot docSnapshot = await ST_goal_collection.get();
-    Query<Object?> checkStatusFinished =
-        ST_goal_collection.where('ST_goal_status', isEqualTo: 'Finished');
-    QuerySnapshot checkFinishedSnapshot = await checkStatusFinished.get();
-    int countDocs = docSnapshot.docs.length;
-    setState(() {
-      finishedCount = checkFinishedSnapshot.docs.length;
-    });
-    print("COUNT OF DOCS: ${countDocs}");
-    print("COUNT OF FINISHED ST GOALS: ${finishedCount}");
-    if (countDocs == finishedCount) {
-      showFinishLT_GoalConfirmDialog(context, ST_goal_info.ST_goal_ID);
+    //get number of images in ST goal
+    CollectionReference imageColRef =
+        ST_goal_collection.doc(ST_goal_info.ST_goal_ID).collection('images');
+    QuerySnapshot imageSnapshot = await imageColRef.get();
+    int ST_goal_image_count = imageSnapshot.docs.length;
+
+    if (ST_goal_image_count < 1) {
+      showMarkAsFinishedNotAllowedDialog();
+    } else {
+      //update the ST goal's status to finished
+      await ST_goal_collection.doc(ST_goal_info.ST_goal_ID)
+          .update({'ST_goal_status': 'Finished'});
+      QuerySnapshot docSnapshot = await ST_goal_collection.get();
+      Query<Object?> checkStatusFinished =
+          ST_goal_collection.where('ST_goal_status', isEqualTo: 'Finished');
+      //gets all docs of finished ST goals
+      QuerySnapshot checkFinishedSnapshot = await checkStatusFinished.get();
+
+      //number of all ST goals
+      int countDocs = docSnapshot.docs.length;
+      setState(() {
+        //number of finished ST goals
+        finishedCount = checkFinishedSnapshot.docs.length;
+      });
+      print("COUNT OF DOCS: ${countDocs}");
+      print("COUNT OF FINISHED ST GOALS: ${finishedCount}");
+
+      //if all ST goals are finished, show finish confirm dialog
+      if (countDocs == finishedCount) {
+        showFinishLT_GoalConfirmDialog(context, ST_goal_info.ST_goal_ID);
+      }
     }
+    //get all ST goals
   }
 
   congratsAndRewardsDialog(BuildContext context, Map<String, int> reward) {
@@ -508,7 +586,7 @@ class _dashboard_screenState extends State<dashboard_screen> {
     random = random.clamp(1, 6);
 
     return showDialog(
-        // barrierDismissible: false,
+        barrierDismissible: false,
         context: context,
         builder: (context) {
           return AlertDialog(
@@ -592,6 +670,13 @@ class _dashboard_screenState extends State<dashboard_screen> {
                                   fontSize: 14),
                               textAlign: TextAlign.start,
                             ),
+                            Text(
+                              "Base Reward Multiplier:",
+                              style: TextStyle(
+                                  fontFamily: 'LexendDeca-Regular',
+                                  fontSize: 14),
+                              textAlign: TextAlign.start,
+                            ),
                             Row(
                               children: [
                                 Container(
@@ -638,6 +723,16 @@ class _dashboard_screenState extends State<dashboard_screen> {
                               height: 5,
                             ),
                             Text(
+                              "x${reward['base_reward_multiplier']}",
+                              style: TextStyle(
+                                  fontFamily: 'LexendDeca-Regular',
+                                  fontSize: 14),
+                              textAlign: TextAlign.start,
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Text(
                               "${reward['reward']}",
                               style: TextStyle(
                                   fontFamily: 'LexendDeca-Regular',
@@ -671,7 +766,8 @@ class _dashboard_screenState extends State<dashboard_screen> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => LT_goal_tab(
-                                      loggedInUser: widget.loggedInUser)));
+                                      loggedInUser: widget.loggedInUser
+                                      )));
                         }),
                   ),
                 ],
@@ -782,7 +878,13 @@ class _dashboard_screenState extends State<dashboard_screen> {
               child: StreamBuilder<List<ST_goal>>(
             stream: readGoals(),
             builder: (context, snapshot) {
-              if (snapshot.hasData) {
+              if(snapshot.connectionState == ConnectionState.waiting){
+                return Center(child: CircularProgressIndicator(),);
+              }
+              else if(!snapshot.hasData || snapshot.data!.isEmpty){
+                return Center(child: Text("No Short-Term Goals yet."),);
+              }
+              else {
                 final goals = snapshot.data!;
                 return ListView.builder(
                   itemCount: snapshot.data!.length,
@@ -791,10 +893,6 @@ class _dashboard_screenState extends State<dashboard_screen> {
                     return Column(children: [buildGoals(goal)]);
                   },
                   physics: BouncingScrollPhysics(),
-                );
-              } else {
-                return Center(
-                  child: Text("No data found."),
                 );
               }
             },

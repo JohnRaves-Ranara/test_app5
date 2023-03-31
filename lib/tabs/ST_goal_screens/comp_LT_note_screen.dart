@@ -7,18 +7,19 @@ import 'package:test_app5/add_note_screen.dart';
 
 import '../../LT_goal.dart';
 import '../../LT_note.dart';
+import '../../comp_add_note_screen.dart';
 
-class LT_notes_screen extends StatefulWidget {
+class comp_LT_note_screen extends StatefulWidget {
   final Current_User loggedInUser;
   final LT_goal LT_goal_info;
 
-  LT_notes_screen({required this.loggedInUser, required this.LT_goal_info});
+  comp_LT_note_screen({required this.loggedInUser, required this.LT_goal_info});
 
   @override
-  State<LT_notes_screen> createState() => _LT_notes_screenState();
+  State<comp_LT_note_screen> createState() => _comp_LT_note_screenState();
 }
 
-class _LT_notes_screenState extends State<LT_notes_screen> {
+class _comp_LT_note_screenState extends State<comp_LT_note_screen> {
   TextEditingController LT_note_title = TextEditingController();
   TextEditingController LT_note_text = TextEditingController();
   //DELETE POPUP
@@ -146,17 +147,7 @@ class _LT_notes_screenState extends State<LT_notes_screen> {
                         side: BorderSide(width: 0.5, color: Colors.black87),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15))),
-                    onPressed: () => {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => add_note_screen(
-                                  note_text_text: "",
-                                  note_title_text: "",
-                                  isUpdate: false,
-                                  loggedInUser: widget.loggedInUser,
-                                  LT_goal_info: widget.LT_goal_info)))
-                    },
+                    onPressed: null,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: Column(
@@ -220,7 +211,7 @@ class _LT_notes_screenState extends State<LT_notes_screen> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => add_note_screen(
+                builder: (context) => comp_add_note_screen(
                       LT_note_ID: LT_note_info.LT_note_ID,
                       loggedInUser: widget.loggedInUser,
                       LT_goal_info: widget.LT_goal_info,
@@ -230,21 +221,7 @@ class _LT_notes_screenState extends State<LT_notes_screen> {
                     )));
       },
       openWithTap: false,
-      menuItems: [
-        FocusedMenuItem(
-            backgroundColor: Colors.red[600],
-            title: Text(
-              "Delete",
-              style: TextStyle(color: Colors.white),
-            ),
-            onPressed: () {
-              showDeleteNoteDialog(context, LT_note_info.LT_note_ID);
-            },
-            trailingIcon: Icon(
-              Icons.delete,
-              color: Colors.white,
-            )),
-      ],
+      menuItems: [],
       child: Padding(
         padding: const EdgeInsets.all(5),
         child: Container(
