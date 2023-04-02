@@ -116,9 +116,10 @@ class _documentation_screenState extends State<documentation_screen> {
         context: context,
         builder: (context) {
           return AlertDialog(
+            actionsPadding: EdgeInsets.all(10),
             title: Text(
               "Delete Image?",
-              style: TextStyle(fontFamily: 'LexendDeca-Regular'),
+              style: TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 16),
             ),
             content: SingleChildScrollView(
               child: Column(
@@ -132,10 +133,11 @@ class _documentation_screenState extends State<documentation_screen> {
                   SizedBox(
                     height: 20,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Container(
+                ],
+              ),
+            ),
+            actions: [
+              Container(
                         height: 45,
                         width: MediaQuery.of(context).size.width / 3.5,
                         child: ElevatedButton(
@@ -152,9 +154,6 @@ class _documentation_screenState extends State<documentation_screen> {
                                   fontSize: 12),
                             ),
                             onPressed: () => {Navigator.pop(context)}),
-                      ),
-                      SizedBox(
-                        width: 20,
                       ),
                       Container(
                         height: 45,
@@ -177,11 +176,7 @@ class _documentation_screenState extends State<documentation_screen> {
                                   Navigator.pop(context)
                                 }),
                       ),
-                    ],
-                  )
-                ],
-              ),
-            ),
+            ],
           );
         });
   }
@@ -204,7 +199,7 @@ class _documentation_screenState extends State<documentation_screen> {
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Text(
-                      widget.goal.ST_goal_name,
+                      'Documentation',
                       style: TextStyle(
                           fontFamily: 'LexendDeca-Bold',
                           fontSize: 20,
@@ -320,6 +315,7 @@ class _documentation_screenState extends State<documentation_screen> {
                   .collection("shortterm_goals")
                   .doc(widget.goal.ST_goal_ID)
                   .collection("images")
+                  .orderBy('creationDate', descending: false)
                   .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {

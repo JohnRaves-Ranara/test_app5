@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:test_app5/main.dart';
 import 'Current_User.dart';
 import 'LT_goal.dart';
 import 'ST_goal.dart';
@@ -29,14 +30,21 @@ class _add_image_screenState extends State<add_image_screen> {
   File? pickedImage;
   File? compressedImage;
   String? imageDownloadURL;
+  bool isUploading = false;
   TextEditingController imageDescriptionController = TextEditingController();
   String compressedImagePath = "/storage/emulated/0/Download";
+
+  @override
+  void dispose() {
+    imageDescriptionController.dispose();
+    super.dispose();
+  }
 
   Future<Uint8List> compressImage(File file) async {
     print("Original image file size: ${await file.length()}");
     Uint8List imageBytes = await file.readAsBytes();
     final Uint8List compressedFile =
-        await FlutterImageCompress.compressWithList(imageBytes, quality: 15);
+        await FlutterImageCompress.compressWithList(imageBytes, quality: 20);
     print("Compressed image file size: ${compressedFile.length}");
     return compressedFile;
   }
@@ -66,6 +74,9 @@ class _add_image_screenState extends State<add_image_screen> {
   }
 
   Future upload(BuildContext context) async {
+    setState(() {
+      isUploading = true;
+    });
     final path =
         '${widget.loggedInUser.userID}-${widget.loggedInUser.email}/${widget.goal.ST_goal_name}-${widget.goal.ST_goal_ID}/${basename(pickedImage!.path)}';
     final file = File(pickedImage!.path);
@@ -94,11 +105,14 @@ class _add_image_screenState extends State<add_image_screen> {
       'image_ID': doc.id,
       'image_URL': imageDownloadURL,
       'image_desc': imageDescriptionController.text.trim(),
-      'creationDate' : DateTime.now().toString()
+      'creationDate': DateTime.now().toString()
     };
 
     doc.set(json);
     await addImageCount();
+    setState(() {
+      isUploading = false;
+    });
     Navigator.pop(context);
   }
 
@@ -114,57 +128,6 @@ class _add_image_screenState extends State<add_image_screen> {
     }
   }
 
-  //validation popup
-  showValidationDialog(BuildContext context) {
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text("Invalid"),
-            content: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Please select an image.",
-                    style: TextStyle(
-                        fontFamily: 'LexendDeca-Regular', fontSize: 14),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      SizedBox(
-                        width: 20,
-                      ),
-                      Container(
-                        height: 45,
-                        width: MediaQuery.of(context).size.width / 3.5,
-                        child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                elevation: 5,
-                                backgroundColor: Colors.blue,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(25))),
-                            child: Text(
-                              "OK",
-                              style: TextStyle(
-                                  fontFamily: 'LexendDeca-Regular',
-                                  fontSize: 12),
-                            ),
-                            onPressed: () => {Navigator.pop(context)}),
-                      ),
-                    ],
-                  )
-                ],
-              ),
-            ),
-          );
-        });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -173,34 +136,35 @@ class _add_image_screenState extends State<add_image_screen> {
         elevation: 0,
         backgroundColor: Colors.transparent,
         centerTitle: true,
+        toolbarHeight: 70,
         title: Text(
           "Add Image",
           style: TextStyle(
-              fontFamily: 'LexendDeca-Bold', fontSize: 20, color: Colors.black),
+              fontFamily: 'LexendDeca-Bold', fontSize: 18, color: Colors.black),
         ),
         actions: [
-          InkWell(
-              splashColor: Colors.grey,
-              onTap: () {
-                if (pickedImage == null) {
-                  showValidationDialog(context);
-                } else {
-                  upload(context);
-                }
-              },
-              child: Container(
-                height: 50,
-                width: 100,
-                child: Center(
-                  child: Text(
-                    "Done",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 18,
-                        fontFamily: 'LexendDeca-Regular'),
-                  ),
-                ),
-              ))
+          (pickedImage!=null)?
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 7),
+            child: IconButton(
+                splashColor: Colors.grey,
+                onPressed: isUploading ? null : () {upload(context);},
+                icon: Icon(
+                  Icons.check,
+                  size: 30,
+                )),
+          )
+          :
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 7),
+            child: IconButton(
+                splashColor: Colors.grey,
+                onPressed: null,
+                icon: Icon(
+                  Icons.check,
+                  size: 30,
+                )),
+          )
         ],
       ),
       body: SingleChildScrollView(

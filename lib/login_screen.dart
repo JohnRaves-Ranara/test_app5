@@ -7,6 +7,7 @@ import 'package:test_app5/tabs/LT_goal_tab.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:test_app5/signup_screen.dart';
 import 'Current_User.dart';
+import 'main.dart';
 import 'theme/app_colors.dart';
 // import 'tabs/LT_goal_screens/main_screen.dart';
 
@@ -34,89 +35,107 @@ class _login_screenState extends State<login_screen> {
     setState(() {
       isLoggingIn = true;
     });
-    try{
+    try {
       final FirebaseAuth auth = FirebaseAuth.instance;
-    await auth.signInWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim());
+      await auth.signInWithEmailAndPassword(
+          email: emailController.text.trim(),
+          password: passwordController.text.trim());
 
-    final uid = auth.currentUser!.uid;
-    final Current_User loggedInUser = await getUserInfo(uid);
-    emailController.clear();
-    passwordController.clear();
-    // Navigator.pushReplacement(
-    //     context,
-    //     MaterialPageRoute(
-    //         builder: (context) =>
-    //             LT_goal_tab(
-    //               loggedInUser: loggedInUser
-    //               )));
-    } on FirebaseAuthException catch(e){
+      final uid = auth.currentUser!.uid;
+      final Current_User loggedInUser = await getUserInfo(uid);
+      emailController.clear();
+      passwordController.clear();
+      // Navigator.pushReplacement(
+      //     context,
+      //     MaterialPageRoute(
+      //         builder: (context) =>
+      //             LT_goal_tab(
+      //               loggedInUser: loggedInUser
+      //               )));
+    } on FirebaseAuthException catch (e) {
       showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            actionsPadding: EdgeInsets.all(15),
-            insetPadding: EdgeInsets.symmetric(horizontal: 10),
-            actions: [
-              Container(
-                height: 45,
-                width: MediaQuery.of(context).size.width / 3.5,
-                child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        elevation: 5,
-                        backgroundColor: Colors.blue,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25))),
-                    child: Text(
-                      "OK",
+          barrierDismissible: false,
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              actionsPadding: EdgeInsets.all(15),
+              insetPadding: EdgeInsets.symmetric(horizontal: 10),
+              actions: [
+                Container(
+                  height: 45,
+                  width: MediaQuery.of(context).size.width / 3.5,
+                  child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          elevation: 5,
+                          backgroundColor: Colors.blue,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25))),
+                      child: Text(
+                        "OK",
+                        style: TextStyle(
+                            fontFamily: 'LexendDeca-BOLD', fontSize: 14),
+                      ),
+                      onPressed: () => {Navigator.pop(context)}),
+                ),
+              ],
+              title: Text(
+                "ERROR",
+                style: TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 16),
+              ),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      e.message.toString(),
                       style: TextStyle(
-                          fontFamily: 'LexendDeca-BOLD', fontSize: 14),
+                          fontFamily: 'LexendDeca-Regular', fontSize: 16),
                     ),
-                    onPressed: () => {Navigator.pop(context)}),
+                    SizedBox(
+                      height: 20,
+                    ),
+                  ],
+                ),
               ),
-            ],
-            title: Text("ERROR", style: TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 16),),
-            content: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    e.message.toString(),
-                    style: TextStyle(
-                        fontFamily: 'LexendDeca-Regular', fontSize: 16),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                ],
-              ),
-            ),
-          );
-        });
-    }
-    finally{
+            );
+          });
+    } finally {
       setState(() {
-      isLoggingIn = false;
-    });
+        isLoggingIn = false;
+      });
     }
-    
   }
 
   Future getUserInfo(String id) async {
-    DocumentSnapshot snapshot =
-        await FirebaseFirestore.instance.collection('users').doc(id).get();
+    DocumentReference doc_snapshot =
+        FirebaseFirestore.instance.collection('users').doc(id);
+    DocumentSnapshot user_snapshot = await doc_snapshot.get();
+    DocumentSnapshot pokemon_snapshot =
+        await doc_snapshot.collection('pokemon').doc(id).get();
+    String? username;
+    String? email;
+    String? password;
+    String? pet_name;
+    int? pokemon_food;
 
-    if (snapshot.exists) {
-      final data = snapshot.data()! as Map<String, dynamic>;
-      String username = data['username'];
-      String email = data['email'];
-      String password = data['password'];
-      String pet_name = data['pokemon_name']!;
-      return Current_User(
-          userID: id, username: username, email: email, password: password, pet_name: pet_name);
+    if (user_snapshot.exists) {
+      final user_data = user_snapshot.data()! as Map<String, dynamic>;
+      username = user_data['username'];
+      email = user_data['email'];
+      password = user_data['password'];
+      pet_name = user_data['pokemon_name']!;
     }
+
+    if (pokemon_snapshot.exists) {
+      final pokemon_data = pokemon_snapshot.data()! as Map<String, dynamic>;
+      pokemon_food = pokemon_data['pokemon_food'];
+    }
+    return Current_User(
+        userID: id,
+        username: username!,
+        email: email!,
+        password: password!,
+        pet_name: pet_name!);
   }
 
   @override
@@ -143,9 +162,9 @@ class _login_screenState extends State<login_screen> {
                   style: TextStyle(fontFamily: 'LexendDeca-Regular'),
                   controller: emailController,
                   decoration: InputDecoration(
-                    labelStyle: TextStyle(color: Colors.grey[800]),
+                      labelStyle: TextStyle(color: Colors.grey[800]),
                       enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey)),
+                          borderSide: BorderSide(color: Colors.grey)),
                       focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: AppColors().red)),
                       labelText: "E-mail"),
@@ -160,13 +179,12 @@ class _login_screenState extends State<login_screen> {
                   style: TextStyle(fontFamily: 'LexendDeca-Regular'),
                   controller: passwordController,
                   decoration: InputDecoration(
-                    labelStyle: TextStyle(color: Colors.grey[800]),
+                      labelStyle: TextStyle(color: Colors.grey[800]),
                       enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey)),
+                          borderSide: BorderSide(color: Colors.grey)),
                       focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: AppColors().red)),
                       labelText: "Password"),
-                      
                 ),
               ),
               SizedBox(height: 50),
@@ -182,8 +200,7 @@ class _login_screenState extends State<login_screen> {
                               borderRadius: BorderRadius.circular(10)),
                           backgroundColor: AppColors().red),
                       onPressed: isLoggingIn ? null : logIn,
-                      child: 
-                      Text(
+                      child: Text(
                         "LOGIN",
                         style: TextStyle(
                             fontFamily: 'LexendDeca-SemiBold', fontSize: 16),

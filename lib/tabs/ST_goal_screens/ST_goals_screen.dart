@@ -220,7 +220,7 @@ class _dashboard_screenState extends State<dashboard_screen> {
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     child: OutlinedButton(
                       style: OutlinedButton.styleFrom(
-                          backgroundColor: Colors.blue,
+                          backgroundColor: AppColors().red,
                           elevation: 5,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15))),
@@ -330,6 +330,12 @@ class _dashboard_screenState extends State<dashboard_screen> {
   // }
 
   Future<Map<String, int>> calculateRewards() async {
+    showDialog(
+      barrierDismissible: false,
+        context: context,
+        builder: (context) => Center(
+              child: CircularProgressIndicator(),
+            ));
     print("NISULOD SYA SA CALCULATE");
     DateTime? startDate;
     DateTime endDate = DateTime.now();
@@ -397,7 +403,7 @@ class _dashboard_screenState extends State<dashboard_screen> {
         builder: (context) {
           return AlertDialog(
             actionsPadding: EdgeInsets.all(15),
-            insetPadding: EdgeInsets.symmetric(horizontal:20),
+            insetPadding: EdgeInsets.symmetric(horizontal: 20),
             titlePadding: EdgeInsets.only(left: 20, right: 20, top: 40),
             title: Text(
               "Confirm Long-Term Goal Completion?",
@@ -485,7 +491,7 @@ class _dashboard_screenState extends State<dashboard_screen> {
     update_status.update({'ST_goal_status': 'Ongoing'});
   }
 
-  showMarkAsFinishedNotAllowedDialog(){
+  showMarkAsFinishedNotAllowedDialog() {
     return showDialog(
         barrierDismissible: false,
         context: context,
@@ -512,10 +518,9 @@ class _dashboard_screenState extends State<dashboard_screen> {
                       style: TextStyle(
                           fontFamily: 'LexendDeca-Regular', fontSize: 12),
                     ),
-                    onPressed: ()
-                        {
-                          Navigator.pop(context);
-                        }),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    }),
               ),
             ],
             content: SingleChildScrollView(
@@ -537,6 +542,7 @@ class _dashboard_screenState extends State<dashboard_screen> {
           );
         });
   }
+
   markAsFinished(ST_goal ST_goal_info) async {
     //doc reference to ST goal collection
     CollectionReference ST_goal_collection = FirebaseFirestore.instance
@@ -762,12 +768,12 @@ class _dashboard_screenState extends State<dashboard_screen> {
                               fontFamily: 'LexendDeca-Regular', fontSize: 12),
                         ),
                         onPressed: () async {
-                          Navigator.push(
+                          Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => LT_goal_tab(
-                                      loggedInUser: widget.loggedInUser
-                                      )));
+                                      loggedInUser: widget.loggedInUser)),
+                              (route) => false);
                         }),
                   ),
                 ],
@@ -792,29 +798,28 @@ class _dashboard_screenState extends State<dashboard_screen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
+                  // color: Colors.orange[100],
                   padding: EdgeInsets.only(left: 10),
                   width: MediaQuery.of(context).size.width * 0.4,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(widget.LT_goal_info.LT_goal_name,
+                      Text("Goal Description:",
                           style: TextStyle(
                               fontFamily: 'LexendDeca-Bold', fontSize: 10)),
                       SizedBox(
                         height: 5,
                       ),
-                      SingleChildScrollView(
-                        child: Text(
-                          widget.LT_goal_info.LT_goal_desc,
-                          style: TextStyle(
-                            fontFamily: 'LexendDeca-ExtraLight',
-                            fontSize: 8,
-                          ),
-                          maxLines: 7,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.justify,
+                      Text(
+                        widget.LT_goal_info.LT_goal_desc,
+                        style: TextStyle(
+                          fontFamily: 'LexendDeca-ExtraLight',
+                          fontSize: 8,
                         ),
+                        maxLines: 7,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.justify,
                       )
                     ],
                   ),
@@ -824,6 +829,8 @@ class _dashboard_screenState extends State<dashboard_screen> {
                   height: MediaQuery.of(context).size.height * 0.12,
                   child: OutlinedButton(
                     style: OutlinedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        elevation: 5,
                         side: BorderSide(width: 0.5, color: Colors.black87),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15))),
@@ -878,13 +885,15 @@ class _dashboard_screenState extends State<dashboard_screen> {
               child: StreamBuilder<List<ST_goal>>(
             stream: readGoals(),
             builder: (context, snapshot) {
-              if(snapshot.connectionState == ConnectionState.waiting){
-                return Center(child: CircularProgressIndicator(),);
-              }
-              else if(!snapshot.hasData || snapshot.data!.isEmpty){
-                return Center(child: Text("No Short-Term Goals yet."),);
-              }
-              else {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return Center(
+                  child: Text("No Short-Term Goals yet.", style: TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 12)),
+                );
+              } else {
                 final goals = snapshot.data!;
                 return ListView.builder(
                   itemCount: snapshot.data!.length,
@@ -1020,8 +1029,7 @@ class _dashboard_screenState extends State<dashboard_screen> {
   }
 
   Stream<List<ST_goal>> readGoals() {
-    setState(() => isLoading = true);
-    Stream<List<ST_goal>> stream = FirebaseFirestore.instance
+    return FirebaseFirestore.instance
         .collection('users')
         .doc(widget.loggedInUser.userID)
         .collection('longterm_goals')
@@ -1036,8 +1044,5 @@ class _dashboard_screenState extends State<dashboard_screen> {
                 ST_goal_desc: doc.data()['ST_goal_desc'],
                 ST_goal_status: doc.data()['ST_goal_status']))
             .toList());
-
-    setState(() => isLoading = false);
-    return stream;
   }
 }

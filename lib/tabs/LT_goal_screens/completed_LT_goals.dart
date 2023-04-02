@@ -245,7 +245,7 @@ class _completed_LT_goalsState extends State<completed_LT_goals> {
                   );
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return Center(
-                    child: Text("No Completed Long-Term Goals yet."),
+                    child: Text("No Completed Long-Term Goals yet.", style: TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 12)),
                   );
                 } else {
                   final goals = snapshot.data!;
@@ -302,30 +302,46 @@ class _completed_LT_goalsState extends State<completed_LT_goals> {
                   color: Colors.white),
               child: Column(
                 children: [
-                  CachedNetworkImage(
-                    placeholder: (context, url) =>
-                        const CircularProgressIndicator(),
-                    imageUrl: LT_goal_info.LT_goal_banner,
-                    imageBuilder: ((context, imageProvider) => Container(
-                          clipBehavior: Clip.hardEdge,
-                          height: 90,
-                          decoration: BoxDecoration(
-                              color: Colors.orange[100],
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(23),
-                                  topRight: Radius.circular(23)),
-                              image: DecorationImage(
-                                  colorFilter: ColorFilter.mode(
-                                      Colors.black.withOpacity(0.4),
-                                      BlendMode.darken),
-                                  fit: BoxFit.cover,
-                                  image: imageProvider)),
-                        )),
+                  Stack(
+                    children: [
+                      CachedNetworkImage(
+                        placeholder: (context, url) =>
+                            const CircularProgressIndicator(),
+                        imageUrl: LT_goal_info.LT_goal_banner,
+                        imageBuilder: ((context, imageProvider) => Container(
+                              clipBehavior: Clip.hardEdge,
+                              height: 90,
+                              decoration: BoxDecoration(
+                                  color: Colors.orange[100],
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(23),
+                                      topRight: Radius.circular(23)),
+                                  image: DecorationImage(
+                                      colorFilter: ColorFilter.mode(
+                                          Colors.black.withOpacity(0.4),
+                                          BlendMode.darken),
+                                      fit: BoxFit.cover,
+                                      image: imageProvider)),
+                            )),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Align(
+                          alignment: Alignment.topRight,
+                          child: Container(
+                            height: 30,
+                            width: 30,
+                            decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.green.withOpacity(0.5)),
+                            child: Icon(Icons.check, color: Colors.white.withOpacity(0.8), size: 15,),
+                          ),
+                        ),
+                      )
+                    ],
                   ),
                   Container(
                     width: 200,
                     // color: Colors.green[100],
-                    padding: EdgeInsets.symmetric(horizontal: 14, vertical: 17),
+                    padding: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.start,

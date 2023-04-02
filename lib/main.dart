@@ -16,12 +16,13 @@ Future<void> main() async {
   await Firebase.initializeApp();
   runApp(const MyApp());
 }
-
+final navigatorKey = GlobalKey<NavigatorState>();
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       home: MainPage(),
@@ -29,30 +30,39 @@ class MyApp extends StatelessWidget {
   }
 }
 
+
+
 class MainPage extends StatelessWidget {
+  Current_User? curr_User;
+  MainPage({this.curr_User});
   Future<Current_User> getUserInfo(String id) async {
-    DocumentSnapshot snapshot =
-        await FirebaseFirestore.instance.collection('users').doc(id).get();
+    DocumentReference doc_snapshot =
+        FirebaseFirestore.instance.collection('users').doc(id);
+    DocumentSnapshot user_snapshot = await doc_snapshot.get();
+    DocumentSnapshot pokemon_snapshot =
+        await doc_snapshot.collection('pokemon').doc(id).get();
     String? username;
     String? email;
     String? password;
     String? pet_name;
-    if (snapshot.exists) {
-      final data = snapshot.data()! as Map<String, dynamic>;
-      username = data['username'];
-      email = data['email'];
-      password = data['password'];
-      pet_name = data['pokemon_name']!;
+
+    if (user_snapshot.exists) {
+      final user_data = user_snapshot.data()! as Map<String, dynamic>;
+      username = user_data['username'];
+      email = user_data['email'];
+      password = user_data['password'];
+      pet_name = user_data['pokemon_name']!;
+
+      print("${email} ${password}");
     }
     return Current_User(
         userID: id,
         username: username!,
         email: email!,
         password: password!,
-        pet_name: pet_name!);
+        pet_name: pet_name!,);
   }
 
-  const MainPage({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,7 +75,10 @@ class MainPage extends StatelessWidget {
                   future: getUserInfo(snapshot.data!.uid),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      return LT_goal_tab(loggedInUser: snapshot.data!);
+                      return LT_goal_tab(
+                        loggedInUser: snapshot.data!,
+                        current_user: curr_User,
+                      );
                     } else {
                       return Center(child: CircularProgressIndicator());
                     }

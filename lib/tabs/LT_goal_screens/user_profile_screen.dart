@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:test_app5/Current_User.dart';
 
 class user_profile_screen extends StatefulWidget {
-  
   final Current_User loggedInUser;
 
   user_profile_screen({required this.loggedInUser});
@@ -17,8 +16,10 @@ class _user_profile_screenState extends State<user_profile_screen> {
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Center(child: Text("Logged in User: ${widget.loggedInUser.username}"),)
+          Text("Username: ${widget.loggedInUser.username}"),
+          Text("Email: ${widget.loggedInUser.email}"),
         ],
       ),
     );

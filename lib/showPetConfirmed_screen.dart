@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:test_app5/main.dart';
 import 'package:test_app5/tabs/LT_goal_tab.dart';
+import 'package:test_app5/theme/app_colors.dart';
 import 'Current_User.dart';
 
 class showPetConfirmed_screen extends StatefulWidget {
@@ -16,8 +17,13 @@ class showPetConfirmed_screen extends StatefulWidget {
 }
 
 class _showPetConfirmed_screenState extends State<showPetConfirmed_screen> {
-
   Future logIn() async {
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) => Center(
+              child: CircularProgressIndicator(),
+            ));
     await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: widget.loggedInUser.email,
         password: widget.loggedInUser.password);
@@ -27,7 +33,7 @@ class _showPetConfirmed_screenState extends State<showPetConfirmed_screen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(30.0),
+        padding: const EdgeInsets.all(30),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -39,16 +45,13 @@ class _showPetConfirmed_screenState extends State<showPetConfirmed_screen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "You have chosen",
+                  "You have chosen ",
                   style:
-                      TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 22),
-                ),
-                SizedBox(
-                  width: 5,
+                      TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 18),
                 ),
                 Text(
                   widget.pokemon_name,
-                  style: TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 22),
+                  style: TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 18),
                 ),
               ],
             ),
@@ -102,7 +105,7 @@ class _showPetConfirmed_screenState extends State<showPetConfirmed_screen> {
               child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       elevation: 5,
-                      backgroundColor: Colors.blue,
+                      backgroundColor: AppColors().red,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(25))),
                   child: Text(
@@ -112,12 +115,13 @@ class _showPetConfirmed_screenState extends State<showPetConfirmed_screen> {
                         fontSize: 18,
                         color: Colors.white),
                   ),
-                  onPressed: ()async{
+                  onPressed: () async {
                     await logIn();
-                    Navigator.pushReplacement(
-                        context,
+                    Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(
-                            builder: (context) => MainPage()));
+                            builder: (context) =>
+                                MainPage(curr_User: widget.loggedInUser)),
+                        (route) => false);
                   }),
             ),
             SizedBox(

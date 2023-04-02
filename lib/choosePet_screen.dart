@@ -18,7 +18,7 @@ class _choosePet_ScreenState extends State<choosePet_Screen> {
   String? pokemon_name;
   showConfirmPet(BuildContext context) async {
     return showDialog(
-      barrierDismissible: false,
+        barrierDismissible: false,
         context: context,
         builder: (context) {
           return AlertDialog(
@@ -62,6 +62,12 @@ class _choosePet_ScreenState extends State<choosePet_Screen> {
                           color: Colors.white),
                     ),
                     onPressed: () async {
+                      showDialog(
+                        barrierDismissible: false,
+                          context: context,
+                          builder: (context) => Center(
+                                child: CircularProgressIndicator(),
+                              ));
                       if (chosenValue == 1) {
                         setState(() {
                           pokemon_name = "torchic";
@@ -92,12 +98,13 @@ class _choosePet_ScreenState extends State<choosePet_Screen> {
                           .collection('users')
                           .doc(widget.loggedInUser.userID)
                           .update({"pokemon_name": pokemon_name});
-                      Navigator.pushReplacement(
+                      Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(
                               builder: (context) => showPetConfirmed_screen(
                                   loggedInUser: widget.loggedInUser,
-                                  pokemon_name: pokemon_name!)));
+                                  pokemon_name: pokemon_name!)),
+                          (route) => false);
                     }),
               ),
             ],
@@ -132,7 +139,7 @@ class _choosePet_ScreenState extends State<choosePet_Screen> {
             height: MediaQuery.of(context).size.height * 0.15,
           ),
           Text(
-            "Select a pet",
+            "Select a Pokeball",
             style: TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 22),
           ),
           SizedBox(

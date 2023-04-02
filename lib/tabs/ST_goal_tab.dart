@@ -25,7 +25,9 @@ class _ST_goal_tabState extends State<ST_goal_tab> {
         appBar: AppBar(
           toolbarHeight: 100,
           actions: [
-            Container(width: 90,),
+            Container(
+              width: 90,
+            ),
             Flexible(
               child: SingleChildScrollView(
                 physics: BouncingScrollPhysics(),
@@ -34,9 +36,10 @@ class _ST_goal_tabState extends State<ST_goal_tab> {
                     alignment: Alignment.center,
                     child: Text(
                       widget.LT_goal_info.LT_goal_name,
+                      // widget.LT_goal_info.LT_goal_name,
                       style: TextStyle(
                           fontFamily: 'LexendDeca-Bold',
-                          fontSize: 20,
+                          fontSize: 15,
                           color: Colors.black),
                       overflow: TextOverflow.ellipsis,
                     )),
@@ -93,7 +96,7 @@ class _ST_goal_tabState extends State<ST_goal_tab> {
         child: Center(
           child: Text(
             text,
-            style: TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 13),
+            style: TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 11),
             textAlign: TextAlign.center,
           ),
         ),

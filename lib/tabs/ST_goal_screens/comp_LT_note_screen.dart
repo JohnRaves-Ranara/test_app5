@@ -120,7 +120,7 @@ class _comp_LT_note_screenState extends State<comp_LT_note_screen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(widget.LT_goal_info.LT_goal_name,
+                      Text("Goal Description:",
                           style: TextStyle(
                               fontFamily: 'LexendDeca-Bold', fontSize: 10)),
                       SizedBox(
@@ -139,38 +139,42 @@ class _comp_LT_note_screenState extends State<comp_LT_note_screen> {
                     ],
                   ),
                 ),
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.35,
-                  height: MediaQuery.of(context).size.height * 0.12,
-                  child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                        side: BorderSide(width: 0.5, color: Colors.black87),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15))),
-                    onPressed: null,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.add,
-                            size: 30,
-                            color: Colors.black87,
-                          ),
-                          Text(
-                            "ADD NOTE",
-                            style: TextStyle(
-                                fontSize: 10,
-                                fontFamily: 'LexendDeca-Regular',
-                                color: Colors.black87),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.12
+                )
+                // Container(
+                //   width: MediaQuery.of(context).size.width * 0.35,
+                //   height: MediaQuery.of(context).size.height * 0.12,
+                //   child: OutlinedButton(
+                //     style: OutlinedButton.styleFrom(
+                //         side: BorderSide(width: 0.5, color: Colors.black87),
+                //         shape: RoundedRectangleBorder(
+                //             borderRadius: BorderRadius.circular(15))),
+                //     onPressed: null,
+                //     child: Padding(
+                //       padding: const EdgeInsets.symmetric(horizontal: 10),
+                //       child: Column(
+                //         mainAxisAlignment: MainAxisAlignment.center,
+                //         children: [
+                //           Icon(
+                //             Icons.add,
+                //             size: 30,
+                //             color: Colors.black87,
+                //           ),
+                //           SizedBox(height: 5,),
+                //           Text(
+                //             "ADD NOTE",
+                //             style: TextStyle(
+                //                 fontSize: 10,
+                //                 fontFamily: 'LexendDeca-Regular',
+                //                 color: Colors.black87),
+                //             textAlign: TextAlign.center,
+                //           ),
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),
@@ -187,7 +191,7 @@ class _comp_LT_note_screenState extends State<comp_LT_note_screen> {
                   );
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return Center(
-                    child: Text("No notes yet."),
+                    child: Text("No notes yet.", style: TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 12)),
                   );
                 } else {
                   final notes = snapshot.data!;

@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
 import 'package:test_app5/tabs/ST_goal_screens/ST_goals_screen.dart';
+import 'package:test_app5/theme/app_colors.dart';
 import '../../Current_User.dart';
 import '../../LT_goal.dart';
 import '../ST_goal_tab.dart';
@@ -189,7 +190,7 @@ class _main_screenState extends State<main_screen> {
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     child: OutlinedButton(
                       style: OutlinedButton.styleFrom(
-                        backgroundColor: Colors.blue,
+                        backgroundColor: AppColors().red,
                         elevation: 5,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15))),
@@ -203,7 +204,7 @@ class _main_screenState extends State<main_screen> {
                                   color: Colors.white)),
                           Icon(
                             Icons.arrow_forward_ios,
-                            size: 12,
+                            size: 14,
                             color: Colors.white,
                           )
                         ],
@@ -239,7 +240,7 @@ class _main_screenState extends State<main_screen> {
                   return Center(child: CircularProgressIndicator(),);
                 }
                 else if(!snapshot.hasData || snapshot.data!.isEmpty){
-                  return Center(child: Text("No Long-Term Goals yet."),);
+                  return Center(child: Text("No Long-Term Goals yet.", style: TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 12),),);
                 }
                 else{
                   final goals = snapshot.data!;
@@ -329,7 +330,7 @@ class _main_screenState extends State<main_screen> {
                   Container(
                     width: 200,
                     // color: Colors.green[100],
-                    padding: EdgeInsets.symmetric(horizontal: 14, vertical: 17),
+                    padding: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.start,

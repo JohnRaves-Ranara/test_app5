@@ -1,4 +1,3 @@
-
 class Current_User{
   String email;
   String password;

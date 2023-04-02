@@ -113,27 +113,27 @@ class _LT_notes_screenState extends State<LT_notes_screen> {
                 Container(
                   padding: EdgeInsets.only(left: 10),
                   width: MediaQuery.of(context).size.width * 0.4,
-                  height: MediaQuery.of(context).size.height * 0.12,
-                  // color: Colors.orange[100],
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(widget.LT_goal_info.LT_goal_name,
+                      Text("Goal Description:",
                           style: TextStyle(
                               fontFamily: 'LexendDeca-Bold', fontSize: 10)),
                       SizedBox(
                         height: 5,
                       ),
-                      Text(
-                        widget.LT_goal_info.LT_goal_desc,
-                        style: TextStyle(
-                          fontFamily: 'LexendDeca-ExtraLight',
-                          fontSize: 8,
+                      SingleChildScrollView(
+                        child: Text(
+                          widget.LT_goal_info.LT_goal_desc,
+                          style: TextStyle(
+                            fontFamily: 'LexendDeca-ExtraLight',
+                            fontSize: 8,
+                          ),
+                          maxLines: 7,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.justify,
                         ),
-                        maxLines: 7,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.justify,
                       )
                     ],
                   ),
@@ -143,6 +143,8 @@ class _LT_notes_screenState extends State<LT_notes_screen> {
                   height: MediaQuery.of(context).size.height * 0.12,
                   child: OutlinedButton(
                     style: OutlinedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        elevation: 5,
                         side: BorderSide(width: 0.5, color: Colors.black87),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15))),
@@ -166,6 +168,9 @@ class _LT_notes_screenState extends State<LT_notes_screen> {
                             Icons.add,
                             size: 30,
                             color: Colors.black87,
+                          ),
+                          SizedBox(
+                            height: 5,
                           ),
                           Text(
                             "ADD NOTE",
@@ -196,7 +201,7 @@ class _LT_notes_screenState extends State<LT_notes_screen> {
                   );
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return Center(
-                    child: Text("No notes yet."),
+                    child: Text("No notes yet.", style: TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 12)),
                   );
                 } else {
                   final notes = snapshot.data!;

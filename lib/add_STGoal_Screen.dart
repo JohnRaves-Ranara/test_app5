@@ -33,7 +33,7 @@ class _addGoalScreenState extends State<addGoalScreen> {
                 child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                         elevation: 5,
-                        backgroundColor: AppColors().red,
+                        backgroundColor:AppColors().red,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(25))),
                     child: Text(
@@ -44,7 +44,7 @@ class _addGoalScreenState extends State<addGoalScreen> {
                     onPressed: () => {Navigator.pop(context)}),
               ),
             ],
-            title: Text("Invalid"),
+            title: Text("Invalid", style: TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 16),),
             content: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -62,6 +62,14 @@ class _addGoalScreenState extends State<addGoalScreen> {
             ),
           );
         });
+  }
+
+   @override
+  void dispose() {
+    goalNameController.dispose();
+    descriptionController.dispose();
+
+    super.dispose();
   }
 
   @override
@@ -116,6 +124,8 @@ class _addGoalScreenState extends State<addGoalScreen> {
               padding: EdgeInsets.symmetric(horizontal: 30),
               child: OutlinedButton(
                   style: OutlinedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      elevation: 5,
                       side: BorderSide(color: Colors.black87, width: 0.5),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15))),
@@ -189,7 +199,7 @@ class _addGoalScreenState extends State<addGoalScreen> {
                   child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                           elevation: 5,
-                          backgroundColor: Colors.blue,
+                          backgroundColor: AppColors().red,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(25))),
                       child: Text(

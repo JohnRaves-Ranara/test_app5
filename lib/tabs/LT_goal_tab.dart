@@ -11,7 +11,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LT_goal_tab extends StatefulWidget {
   final Current_User loggedInUser;
-  LT_goal_tab({required this.loggedInUser});
+  final Current_User? current_user;
+  LT_goal_tab({required this.loggedInUser, this.current_user});
 
   @override
   State<LT_goal_tab> createState() => _LT_goal_tabState();
@@ -39,22 +40,27 @@ class _LT_goal_tabState extends State<LT_goal_tab> {
     print("finish add");
   }
 
-  bruh() async {
-    DocumentReference bruh = FirebaseFirestore.instance
+  Stream getPokemonFood() {
+    // var snapshot = await FirebaseFirestore.instance
+    //     .collection('users')
+    //     .doc(widget.loggedInUser.userID)
+    //     .collection('pokemon')
+    //     .doc(widget.loggedInUser.userID)
+    //     .get();
+    // int? food;
+    // if (snapshot.exists) {
+    //   print("GA EXIST ANG SNAPSHOT");
+    //   food = snapshot.get('pokemon_food');
+    // }
+    // return food!;
+    final DocumentReference docRef = FirebaseFirestore.instance
         .collection('users')
         .doc(widget.loggedInUser.userID)
-        .collection("longterm_goals")
-        .doc("kqk5xoo1pJAuLBCcU2lo");
-    DocumentSnapshot bruhSnap = await bruh.get();
+        .collection('pokemon')
+        .doc(widget.loggedInUser.userID);
 
-    final DocumentReference target = FirebaseFirestore.instance
-        .collection('users')
-        .doc(widget.loggedInUser.userID)
-        .collection("finished_longterm_goals")
-        .doc("kqk5xoo1pJAuLBCcU2lo");
-
-    await target.set(bruhSnap.data());
-    await bruh.delete();
+    final Stream<DocumentSnapshot> docStream = docRef.snapshots();
+    return docStream;
   }
 
   showAddLTGoalDialiog(BuildContext context) {
@@ -147,19 +153,33 @@ class _LT_goal_tabState extends State<LT_goal_tab> {
     return SafeArea(
       child: Scaffold(
         drawer: Drawer(
-                child: ListView(
-                  children: [
-                    ListTile(
-                      title: Text("Profile", style: TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 18),),
-                      onTap: ()=> Navigator.push(context, MaterialPageRoute(builder: (context)=> user_profile_screen(loggedInUser: widget.loggedInUser))),
-                    ),
-                    ListTile(
-                      title: Text("Sign Out", style: TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 18),),
-                      onTap: ()async{ await FirebaseAuth.instance.signOut();},
-                    )
-                  ],
+          child: ListView(
+            children: [
+              ListTile(
+                title: Text(
+                  "Profile",
+                  style:
+                      TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 13),
                 ),
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => user_profile_screen(
+                            loggedInUser: widget.loggedInUser))),
               ),
+              ListTile(
+                title: Text(
+                  "Sign Out",
+                  style:
+                      TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 13),
+                ),
+                onTap: () async {
+                  await FirebaseAuth.instance.signOut();
+                },
+              )
+            ],
+          ),
+        ),
         appBar: AppBar(
           leading: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -173,7 +193,7 @@ class _LT_goal_tabState extends State<LT_goal_tab> {
                         style: TextStyle(
                             color: Colors.black,
                             fontFamily: 'LexendDeca-Bold',
-                            fontSize: 19)),
+                            fontSize: 14)),
                     onPressed: () {
                       Scaffold.of(context).openDrawer();
                     },
@@ -196,6 +216,8 @@ class _LT_goal_tabState extends State<LT_goal_tab> {
                       width: MediaQuery.of(context).size.width * 0.35,
                       child: OutlinedButton(
                         style: OutlinedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            elevation: 5,
                             side: BorderSide(width: 0.5, color: Colors.black87),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(15))),
@@ -205,7 +227,6 @@ class _LT_goal_tabState extends State<LT_goal_tab> {
                               MaterialPageRoute(
                                   builder: (context) => add_LTGoal_screen(
                                       loggedInUser: widget.loggedInUser)))
-                          // bruh()
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(8),
@@ -234,7 +255,45 @@ class _LT_goal_tabState extends State<LT_goal_tab> {
                       ),
                     ),
                   )
-                : SizedBox()
+                : (groupvalue == 0)
+                    ? Container(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: StreamBuilder(
+                        stream: getPokemonFood(),
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData ||
+                              snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          } else {
+                            final pokemon_food = snapshot.data['pokemon_food'];
+                            
+                            return Row(
+                              children: [
+                                Container(
+                                  height: 20,
+                                  width: 30,
+                                  child:
+                                      Image.asset('assets/apple_pixel.png'),
+                                ),
+                                Text(
+                                  pokemon_food.toString(),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      fontFamily: 'LexendDeca-Bold',
+                                      fontSize: 14,
+                                      color: Colors.black),
+                                ),
+                              ],
+                            );
+                          }
+                        },
+                      ),
+                    )
+                    : SizedBox()
           ],
           // centerTitle: true,
           backgroundColor: Colors.transparent,
@@ -252,7 +311,7 @@ class _LT_goal_tabState extends State<LT_goal_tab> {
                   children: {
                     0: text_Tab("Pet"),
                     1: text_Tab("Long-Term Goals"),
-                    2: text_Tab("Completed Goals")
+                    2: text_Tab("Completed")
                   },
                   onValueChanged: (groupvalue) {
                     setState(() {
@@ -265,6 +324,7 @@ class _LT_goal_tabState extends State<LT_goal_tab> {
             (groupvalue == 0)
                 ? pet_screen(
                     loggedInUser: widget.loggedInUser,
+                    curr_User: widget.loggedInUser,
                   )
                 : (groupvalue == 1)
                     ? main_screen(
@@ -279,14 +339,13 @@ class _LT_goal_tabState extends State<LT_goal_tab> {
 
   Widget text_Tab(String text) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 6, vertical: 10),
-      width: 150,
+      padding: EdgeInsets.symmetric(horizontal: 1, vertical: 10),
       child: Center(
         child: Text(
           text,
           style: TextStyle(
             fontFamily: 'LexendDeca-Regular',
-            fontSize: 13,
+            fontSize: 11,
           ),
           textAlign: TextAlign.center,
         ),

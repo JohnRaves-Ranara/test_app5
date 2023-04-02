@@ -8,6 +8,7 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:test_app5/Current_User.dart';
 import 'package:path/path.dart';
+import 'package:test_app5/theme/app_colors.dart';
 
 class add_LTGoal_screen extends StatefulWidget {
   final Current_User loggedInUser;
@@ -23,11 +24,19 @@ class _add_LTGoal_screenState extends State<add_LTGoal_screen> {
   TextEditingController descriptionController = TextEditingController();
   File? pickedImage;
 
+  @override
+  void dispose() {
+    goalNameController.dispose();
+    descriptionController.dispose();
+
+    super.dispose();
+  }
+
   Future<Uint8List> compressImage(File file) async {
     print("Original image file size: ${await file.length()}");
     Uint8List imageBytes = await file.readAsBytes();
     final Uint8List compressedFile =
-        await FlutterImageCompress.compressWithList(imageBytes, quality: 10);
+        await FlutterImageCompress.compressWithList(imageBytes, quality: 15);
     print("Compressed image file size: ${compressedFile.length}");
     return compressedFile;
   }
@@ -77,7 +86,7 @@ class _add_LTGoal_screenState extends State<add_LTGoal_screen> {
                   child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                           elevation: 5,
-                          backgroundColor: Colors.blue,
+                          backgroundColor: AppColors().red,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(25))),
                       child: Text(
@@ -125,7 +134,7 @@ class _add_LTGoal_screenState extends State<add_LTGoal_screen> {
                 child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                         elevation: 5,
-                        backgroundColor: Colors.blue[700],
+                        backgroundColor: AppColors().red,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(25))),
                     child: Text(
@@ -136,7 +145,7 @@ class _add_LTGoal_screenState extends State<add_LTGoal_screen> {
                     onPressed: () => {Navigator.pop(context)}),
               ),
             ],
-            title: Text("Invalid"),
+            title: Text("Invalid", style: TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 16),),
             content: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -250,7 +259,6 @@ class _add_LTGoal_screenState extends State<add_LTGoal_screen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: TextField(
-                maxLength: 245,
                 maxLines: 15,
                 style:
                     TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 12),

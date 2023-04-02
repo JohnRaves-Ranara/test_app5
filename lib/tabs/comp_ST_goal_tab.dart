@@ -95,7 +95,7 @@ class _comp_ST_goal_tabState extends State<comp_ST_goal_tab> {
         child: Center(
           child: Text(
             text,
-            style: TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 13),
+            style: TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 11),
             textAlign: TextAlign.center,
           ),
         ),

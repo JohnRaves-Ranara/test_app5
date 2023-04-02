@@ -32,6 +32,14 @@ class _add_note_screenState extends State<add_note_screen> {
     note_text = TextEditingController(text: widget.note_text_text);
   }
 
+   @override
+  void dispose() {
+    note_text.dispose();
+    note_text.dispose();
+
+    super.dispose();
+  }
+
   updateNote() async {
     print(note_text.text);
     print(note_title.text);

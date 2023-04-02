@@ -132,11 +132,16 @@ class _open_image_screenState extends State<open_image_screen> {
         .update({'image_desc': description});
   }
 
+   @override
+  void dispose() {
+    descriptionController.dispose();
+    super.dispose();
+  }
+
   @override
   void initState() {
     super.initState();
     imageDescDynamic = widget.image_desc;
-
   }
 
   @override
@@ -149,7 +154,7 @@ class _open_image_screenState extends State<open_image_screen> {
               icon: Icon(Icons.edit_note_rounded),
               onPressed: () {
                 descriptionController.text = imageDescDynamic;
-                
+
                 showUpdateDescriptionDialog(context, widget.image_ID);
               },
             )
@@ -159,38 +164,51 @@ class _open_image_screenState extends State<open_image_screen> {
           iconTheme: IconThemeData(color: Colors.black),
           toolbarHeight: 70,
         ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 5,),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              // color: Colors.orange[100],
-              child: InteractiveViewer(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: CachedNetworkImage(
-                        imageUrl: widget.imageURL,
-                        placeholder: (context, url) =>
-                            Center(child: const CircularProgressIndicator()),
+        body: Container(
+          // color: Colors.orange[100],
+          child: Center(
+            child: SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: InteractiveViewer(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: CachedNetworkImage(
+                          imageUrl: widget.imageURL,
+                          placeholder: (context, url) =>
+                              Center(child: const CircularProgressIndicator()),
+                        ),
                       ),
                     ),
                   ),
-            ),
-            SizedBox(height: 25,),
-            Flexible(
-              child: SingleChildScrollView(
-                physics: BouncingScrollPhysics(),
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  // color: Colors.blue[100],
-                  child: Text(imageDescDynamic, textAlign: TextAlign.justify, style: TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 14),)
+                  SizedBox(
+                    height: 25,
                   ),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      // color: Colors.blue[100],
+                      child: Text(
+                        imageDescDynamic,
+                        textAlign: TextAlign.justify,
+                        style: TextStyle(
+                            fontFamily: 'LexendDeca-Regular', fontSize: 14),
+                      )),
+                  SizedBox(
+                    height: 25,
+                  ),
+                ],
               ),
             ),
-            SizedBox(height: 25,),
-          ],
+          ),
         ),
       ),
     );
