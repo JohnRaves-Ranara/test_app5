@@ -247,56 +247,57 @@ class _comp_documentation_screenState extends State<comp_documentation_screen> {
                       SizedBox(
                         height: 5,
                       ),
-                      SingleChildScrollView(
-                        child: Text(
-                          widget.goal.ST_goal_desc,
-                          style: TextStyle(
-                            fontFamily: 'LexendDeca-ExtraLight',
-                            fontSize: 8,
-                          ),
-                          maxLines: 7,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.justify,
+                      Text(
+                        widget.goal.ST_goal_desc,
+                        style: TextStyle(
+                          fontFamily: 'LexendDeca-ExtraLight',
+                          fontSize: 8,
                         ),
+                        maxLines: 7,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.justify,
                       )
                     ],
                   ),
                 ),
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.35,
+                SizedBox(
                   height: MediaQuery.of(context).size.height * 0.12,
-                  child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                        side: BorderSide(width: 0.5, color: Colors.black87),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15))),
-                    onPressed: null,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.add,
-                            size: 30,
-                            color: Colors.black87,
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            "ADD IMAGE",
-                            style: TextStyle(
-                                fontSize: 10,
-                                fontFamily: 'LexendDeca-Regular',
-                                color: Colors.black87),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                )
+                // Container(
+                //   width: MediaQuery.of(context).size.width * 0.35,
+                //   height: MediaQuery.of(context).size.height * 0.12,
+                //   child: OutlinedButton(
+                //     style: OutlinedButton.styleFrom(
+                //         side: BorderSide(width: 0.5, color: Colors.black87),
+                //         shape: RoundedRectangleBorder(
+                //             borderRadius: BorderRadius.circular(15))),
+                //     onPressed: null,
+                //     child: Padding(
+                //       padding: const EdgeInsets.symmetric(horizontal: 10),
+                //       child: Column(
+                //         mainAxisAlignment: MainAxisAlignment.center,
+                //         children: [
+                //           Icon(
+                //             Icons.add,
+                //             size: 30,
+                //             color: Colors.black87,
+                //           ),
+                //           SizedBox(
+                //             height: 5,
+                //           ),
+                //           Text(
+                //             "ADD IMAGE",
+                //             style: TextStyle(
+                //                 fontSize: 10,
+                //                 fontFamily: 'LexendDeca-Regular',
+                //                 color: Colors.black87),
+                //             textAlign: TextAlign.center,
+                //           ),
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),
