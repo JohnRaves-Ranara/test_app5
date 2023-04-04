@@ -35,6 +35,7 @@ class MyApp extends StatelessWidget {
 class MainPage extends StatelessWidget {
   Current_User? curr_User;
   MainPage({this.curr_User});
+  
   Future<Current_User> getUserInfo(String id) async {
     DocumentReference doc_snapshot =
         FirebaseFirestore.instance.collection('users').doc(id);

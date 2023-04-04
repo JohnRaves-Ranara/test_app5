@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:test_app5/Current_User.dart';
 import 'package:test_app5/add_LTgoal_screen.dart';
 import 'package:test_app5/tabs/LT_goal_screens/completed_LT_goals.dart';
+import '../theme/app_colors.dart';
 import 'LT_goal_screens/LT_goals_screen.dart';
 import 'LT_goal_screens/pet_screen.dart';
-import 'LT_goal_screens/user_profile_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LT_goal_tab extends StatefulWidget {
@@ -148,190 +148,250 @@ class _LT_goal_tabState extends State<LT_goal_tab> {
         }));
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        drawer: Drawer(
-          child: ListView(
-            children: [
-              ListTile(
-                title: Text(
-                  "Profile",
-                  style:
-                      TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 13),
+  Future<bool?> showExitWarning(BuildContext context) async {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        actionsPadding: EdgeInsets.all(15),
+        title: Text(
+          "Confirm Exit?",
+          style: TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 16),
+        ),
+        actions: [
+          Container(
+            height: 45,
+            width: MediaQuery.of(context).size.width / 3.5,
+            child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    elevation: 5,
+                    backgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25))),
+                child: Text(
+                  "Cancel",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontFamily: 'LexendDeca-Regular',
+                      fontSize: 12),
                 ),
-                onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => user_profile_screen(
-                            loggedInUser: widget.loggedInUser))),
+                onPressed: () => Navigator.pop(context, false)),
+          ),
+          Container(
+            height: 45,
+            width: MediaQuery.of(context).size.width / 3.5,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  elevation: 5,
+                  backgroundColor: AppColors().red,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25))),
+              child: Text(
+                "Confirm",
+                style:
+                    TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 12),
               ),
-              ListTile(
-                title: Text(
-                  "Sign Out",
-                  style:
-                      TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 13),
-                ),
-                onTap: () async {
-                  await FirebaseAuth.instance.signOut();
-                },
-              )
+              onPressed: () => Navigator.pop(context, true),
+            ),
+          )
+        ],
+        content: SingleChildScrollView(
+          child: Column(
+            children: [
+              Text(
+                "Are you sure you want to exit?",
+                style:
+                    TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 14),
+              ),
+              SizedBox(
+                height: 20,
+              ),
             ],
           ),
         ),
-        appBar: AppBar(
-          leading: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: Center(
-              child: Builder(
-                builder: (BuildContext context) {
-                  return IconButton(
-                    iconSize: 300,
-                    icon: Text('VisioLife',
-                        overflow: TextOverflow.fade,
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'LexendDeca-Bold',
-                            fontSize: 14)),
-                    onPressed: () {
-                      Scaffold.of(context).openDrawer();
-                    },
-                    tooltip:
-                        MaterialLocalizations.of(context).openAppDrawerTooltip,
-                  );
-                },
-              ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: WillPopScope(
+        onWillPop: () async {
+          final shouldExit = await showExitWarning(context);
+          return shouldExit ?? false;
+        },
+        child: Scaffold(
+          drawer: Drawer(
+            child: ListView(
+              children: [
+                ListTile(
+                  title: Text(
+                    "Sign Out",
+                    style: TextStyle(
+                        fontFamily: 'LexendDeca-Regular', fontSize: 13),
+                  ),
+                  onTap: () async {
+                    await FirebaseAuth.instance.signOut();
+                  },
+                )
+              ],
             ),
           ),
-          leadingWidth: 200,
-          toolbarHeight: 100,
-          actions: [
-            (groupvalue == 1)
-                ? Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 25.0, horizontal: 22),
-                    child: Container(
-                      // color: Colors.orange[100],
-                      width: MediaQuery.of(context).size.width * 0.35,
-                      child: OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            elevation: 5,
-                            side: BorderSide(width: 0.5, color: Colors.black87),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15))),
-                        onPressed: () => {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => add_LTGoal_screen(
-                                      loggedInUser: widget.loggedInUser)))
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "ADD GOAL",
-                                style: TextStyle(
-                                    fontSize: 10,
-                                    fontFamily: 'LexendDeca-Regular',
-                                    color: Colors.black87),
-                                textAlign: TextAlign.center,
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Icon(
-                                Icons.add,
-                                size: 15,
-                                color: Colors.black87,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  )
-                : (groupvalue == 0)
-                    ? Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: StreamBuilder(
-                        stream: getPokemonFood(),
-                        builder: (context, snapshot) {
-                          if (!snapshot.hasData ||
-                              snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                            return Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          } else {
-                            final pokemon_food = snapshot.data['pokemon_food'];
-                            
-                            return Row(
-                              children: [
-                                Container(
-                                  height: 20,
-                                  width: 30,
-                                  child:
-                                      Image.asset('assets/apple_pixel.png'),
-                                ),
-                                Text(
-                                  pokemon_food.toString(),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                      fontFamily: 'LexendDeca-Bold',
-                                      fontSize: 14,
-                                      color: Colors.black),
-                                ),
-                              ],
-                            );
-                          }
-                        },
-                      ),
-                    )
-                    : SizedBox()
-          ],
-          // centerTitle: true,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          iconTheme: IconThemeData(color: Colors.black),
-        ),
-        body: Column(
-          children: [
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: CupertinoSlidingSegmentedControl(
-                  backgroundColor: Colors.grey.withOpacity(0.075),
-                  groupValue: groupvalue,
-                  children: {
-                    0: text_Tab("Pet"),
-                    1: text_Tab("Long-Term Goals"),
-                    2: text_Tab("Completed")
-                  },
-                  onValueChanged: (groupvalue) {
-                    setState(() {
-                      this.groupvalue = groupvalue;
-                    });
+          appBar: AppBar(
+            leading: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: Center(
+                child: Builder(
+                  builder: (BuildContext context) {
+                    return IconButton(
+                      iconSize: 300,
+                      icon: Text('VisioLife',
+                          overflow: TextOverflow.fade,
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontFamily: 'LexendDeca-Bold',
+                              fontSize: 14)),
+                      onPressed: () {
+                        Scaffold.of(context).openDrawer();
+                      },
+                      tooltip: MaterialLocalizations.of(context)
+                          .openAppDrawerTooltip,
+                    );
                   },
                 ),
               ),
             ),
-            (groupvalue == 0)
-                ? pet_screen(
-                    loggedInUser: widget.loggedInUser,
-                    curr_User: widget.loggedInUser,
-                  )
-                : (groupvalue == 1)
-                    ? main_screen(
-                        loggedInUser: widget.loggedInUser,
-                      )
-                    : (completed_LT_goals(loggedInUser: widget.loggedInUser))
-          ],
+            leadingWidth: 200,
+            toolbarHeight: 100,
+            actions: [
+              (groupvalue == 1)
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 25.0, horizontal: 22),
+                      child: Container(
+                        // color: Colors.orange[100],
+                        width: MediaQuery.of(context).size.width * 0.35,
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              elevation: 5,
+                              side:
+                                  BorderSide(width: 0.5, color: Colors.black87),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15))),
+                          onPressed: () => {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => add_LTGoal_screen(
+                                        loggedInUser: widget.loggedInUser)))
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "ADD GOAL",
+                                  style: TextStyle(
+                                      fontSize: 10,
+                                      fontFamily: 'LexendDeca-Regular',
+                                      color: Colors.black87),
+                                  textAlign: TextAlign.center,
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Icon(
+                                  Icons.add,
+                                  size: 15,
+                                  color: Colors.black87,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  : (groupvalue == 0)
+                      ? Container(
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: StreamBuilder(
+                            stream: getPokemonFood(),
+                            builder: (context, snapshot) {
+                              if (!snapshot.hasData ||
+                                  snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                return Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              } else {
+                                final pokemon_food =
+                                    snapshot.data['pokemon_food'];
+
+                                return Row(
+                                  children: [
+                                    Container(
+                                      height: 20,
+                                      width: 30,
+                                      child:
+                                          Image.asset('assets/apple_pixel.png'),
+                                    ),
+                                    Text(
+                                      pokemon_food.toString(),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          fontFamily: 'LexendDeca-Bold',
+                                          fontSize: 14,
+                                          color: Colors.black),
+                                    ),
+                                  ],
+                                );
+                              }
+                            },
+                          ),
+                        )
+                      : SizedBox()
+            ],
+            // centerTitle: true,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            iconTheme: IconThemeData(color: Colors.black),
+          ),
+          body: Column(
+            children: [
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: CupertinoSlidingSegmentedControl(
+                    backgroundColor: Colors.grey.withOpacity(0.075),
+                    groupValue: groupvalue,
+                    children: {
+                      0: text_Tab("Pet"),
+                      1: text_Tab("Long-Term Goals"),
+                      2: text_Tab("Completed")
+                    },
+                    onValueChanged: (groupvalue) {
+                      setState(() {
+                        this.groupvalue = groupvalue;
+                      });
+                    },
+                  ),
+                ),
+              ),
+              (groupvalue == 0)
+                  ? pet_screen(
+                      loggedInUser: widget.loggedInUser,
+                      curr_User: widget.loggedInUser,
+                    )
+                  : (groupvalue == 1)
+                      ? main_screen(
+                          loggedInUser: widget.loggedInUser,
+                        )
+                      : (completed_LT_goals(loggedInUser: widget.loggedInUser))
+            ],
+          ),
         ),
       ),
     );
