@@ -21,8 +21,7 @@ class _showPetConfirmed_screenState extends State<showPetConfirmed_screen> {
     showDialog(
         barrierDismissible: false,
         context: context,
-        builder: (context) => Center(
-              child: CircularProgressIndicator(),
+        builder: (context) => Center(child: Container(height: 90, child: Image.asset('assets/loading.gif'),),
             ));
     await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: widget.loggedInUser.email,
@@ -31,103 +30,98 @@ class _showPetConfirmed_screenState extends State<showPetConfirmed_screen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(30),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(
-              height: 30,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "You have chosen ",
-                  style:
-                      TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 18),
-                ),
-                Text(
-                  widget.pokemon_name,
-                  style: TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 18),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 40,
-            ),
-            Text(
-              "His growth depends on your success.",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 18),
-            ),
-            SizedBox(height: 10),
-            Text(
-              "Go make him big and strong!",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 18),
-            ),
-            SizedBox(
-              height: 50,
-            ),
-            Container(
-                // color: Colors.orange[100],
-                height: MediaQuery.of(context).size.height * 0.2,
-                width: MediaQuery.of(context).size.height * 0.2,
-                child: Image.asset(
-                  'assets/${widget.pokemon_name}lvl1.gif',
-                  fit: BoxFit.contain,
-                )),
-            SizedBox(
-              height: 50,
-            ),
-            Text(
-              "Welcome to VisioLife",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 18),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Text(
-              "Where your goals are brought to life.",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 18),
-            ),
-            SizedBox(
-              height: 50,
-            ),
-            Container(
-              height: 45,
-              width: MediaQuery.of(context).size.width * 0.4,
-              child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      elevation: 5,
-                      backgroundColor: AppColors().red,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25))),
-                  child: Text(
-                    "Proceed",
-                    style: TextStyle(
-                        fontFamily: 'LexendDeca-Bold',
-                        fontSize: 18,
-                        color: Colors.white),
+    return SafeArea(
+      child: Scaffold(
+        body: Padding(
+          padding: const EdgeInsets.all(30),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(
+                height: 30,
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "You have chosen:",
+                    style:
+                        TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 18),
                   ),
-                  onPressed: () async {
-                    await logIn();
-                    Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                MainPage(curr_User: widget.loggedInUser)),
-                        (route) => false);
-                  }),
-            ),
-            SizedBox(
-              height: 10,
-            )
-          ],
+                  SizedBox(height: 30,),
+                  Text(
+                    widget.pokemon_name,
+                    style: TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 22),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 40,
+              ),
+              Text(
+                "His growth depends on your success.",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 18),
+              ),
+              SizedBox(height: 10),
+              Text(
+                "Go make him big and strong!",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 18),
+              ),
+              SizedBox(
+                height: 50,
+              ),
+              Container(
+                  // color: Colors.orange[100],
+                  height: MediaQuery.of(context).size.height * 0.2,
+                  width: MediaQuery.of(context).size.height * 0.2,
+                  child: Image.asset(
+                    'assets/${widget.pokemon_name}lvl1.gif',
+                    fit: BoxFit.contain,
+                  )),
+              SizedBox(
+                height: 50,
+              ),
+              Text(
+                "Welcome to VisioLife.",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 22),
+              ),
+              SizedBox(
+                height: 40,
+              ),
+              Container(
+                height: 45,
+                width: MediaQuery.of(context).size.width * 0.4,
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        elevation: 5,
+                        backgroundColor: AppColors().red,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25))),
+                    child: Text(
+                      "Proceed",
+                      style: TextStyle(
+                          fontFamily: 'LexendDeca-Bold',
+                          fontSize: 18,
+                          color: Colors.white),
+                    ),
+                    onPressed: () async {
+                      await logIn();
+                      Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  MainPage(curr_User: widget.loggedInUser)),
+                          (route) => false);
+                    }),
+              ),
+              SizedBox(
+                height: 10,
+              )
+            ],
+          ),
         ),
       ),
     );

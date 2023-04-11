@@ -51,10 +51,19 @@ dependencies:
   animated_segmented_tab_control: ^1.0.1
   flutter_staggered_grid_view: ^0.6.2
   percent_indicator: ^4.2.3
+  smooth_page_indicator: ^1.0.1
+  shared_preferences: ^2.1.0
+
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+  flutter_native_splash: ^2.2.19
+
+flutter_native_splash:
+  color: "#ffffff"
+  image: assets/logo_1.png
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

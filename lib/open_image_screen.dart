@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:test_app5/theme/app_colors.dart';
 import 'Current_User.dart';
 import 'ST_goal.dart';
 import 'LT_goal.dart';
@@ -81,14 +82,14 @@ class _open_image_screenState extends State<open_image_screen> {
                       controller: descriptionController,
                     ),
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 10),
                   Container(
                     height: 45,
                     width: MediaQuery.of(context).size.width,
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
+                          backgroundColor: AppColors().red,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15))),
                       child: Row(
@@ -184,7 +185,7 @@ class _open_image_screenState extends State<open_image_screen> {
                         child: CachedNetworkImage(
                           imageUrl: widget.imageURL,
                           placeholder: (context, url) =>
-                              Center(child: const CircularProgressIndicator()),
+                              Center(child: Container(height: 90, child: Image.asset('assets/loading.gif'),)),
                         ),
                       ),
                     ),

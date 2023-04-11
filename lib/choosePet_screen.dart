@@ -65,9 +65,8 @@ class _choosePet_ScreenState extends State<choosePet_Screen> {
                       showDialog(
                         barrierDismissible: false,
                           context: context,
-                          builder: (context) => Center(
-                                child: CircularProgressIndicator(),
-                              ));
+                          builder: (context) => Center(child: Container(height: 90, child: Image.asset('assets/loading.gif'),)),
+                              );
                       if (chosenValue == 1) {
                         setState(() {
                           pokemon_name = "torchic";
@@ -139,7 +138,7 @@ class _choosePet_ScreenState extends State<choosePet_Screen> {
             height: MediaQuery.of(context).size.height * 0.15,
           ),
           Text(
-            "Select a Pokeball",
+            "Select your Pet",
             style: TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 22),
           ),
           SizedBox(

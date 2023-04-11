@@ -261,7 +261,7 @@ class _LT_goal_tabState extends State<LT_goal_tab> {
                 ),
               ),
             ),
-            leadingWidth: 200,
+            leadingWidth: 150,
             toolbarHeight: 100,
             actions: [
               (groupvalue == 1)
@@ -322,15 +322,31 @@ class _LT_goal_tabState extends State<LT_goal_tab> {
                               if (!snapshot.hasData ||
                                   snapshot.connectionState ==
                                       ConnectionState.waiting) {
-                                return Center(
-                                  child: CircularProgressIndicator(),
-                                );
+                                return Center(child: Container(height: 90, child: Image.asset('assets/loading.gif'),));
                               } else {
                                 final pokemon_food =
                                     snapshot.data['pokemon_food'];
 
                                 return Row(
                                   children: [
+                                    Tooltip(
+                                      margin:
+                                          EdgeInsets.symmetric(horizontal: 20),
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                                      triggerMode: TooltipTriggerMode.tap,
+                                      message:
+                                          'Earn berries by completing Long-Term Goals!',
+                                      showDuration: Duration(seconds: 5),
+                                      child: Icon(
+                                        Icons.info,
+                                        size: 20,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
                                     Container(
                                       height: 20,
                                       width: 30,

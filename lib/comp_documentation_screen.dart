@@ -38,8 +38,7 @@ class _comp_documentation_screenState extends State<comp_documentation_screen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     CachedNetworkImage(
-                        placeholder: (context, url) => Center(
-                              child: CircularProgressIndicator(),
+                        placeholder: (context, url) => Center(child: Container(height: 90, child: Image.asset('assets/loading.gif'),),
                             ),
                         imageUrl: imageURL,
                         imageBuilder: ((context, imageProvider) => Container(
@@ -205,7 +204,7 @@ class _comp_documentation_screenState extends State<comp_documentation_screen> {
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Text(
-                      widget.goal.ST_goal_name,
+                      'Documentation',
                       style: TextStyle(
                           fontFamily: 'LexendDeca-Bold',
                           fontSize: 20,
@@ -317,9 +316,7 @@ class _comp_documentation_screenState extends State<comp_documentation_screen> {
                   .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
+                  return Center(child: Container(height: 90, child: Image.asset('assets/loading.gif'),));
                 } else if (!snapshot.hasData || snapshot.data!.size == 0) {
                   return (const Center(child: Text("No image/s uploaded.")));
                 } else {
@@ -357,8 +354,7 @@ class _comp_documentation_screenState extends State<comp_documentation_screen> {
                                 borderRadius: BorderRadius.circular(10),
                                 child: CachedNetworkImage(
                                   imageUrl: imageURL,
-                                  placeholder: (context, url) => Center(
-                                      child: const CircularProgressIndicator()),
+                                  placeholder: (context, url) => Center(child: Container(height: 90, child: Image.asset('assets/loading.gif'),)),
                                 ),
                               )),
                         );

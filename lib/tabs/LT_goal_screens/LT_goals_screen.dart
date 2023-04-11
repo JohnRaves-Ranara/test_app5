@@ -49,6 +49,7 @@ class _main_screenState extends State<main_screen> {
     imageDownloadURL = await storageRef.getDownloadURL();
     return imageDownloadURL!;
   }
+
   Future deleteGoal({required String LT_goal_ID}) async {
     final docGoal = FirebaseFirestore.instance
         .collection('users')
@@ -60,7 +61,9 @@ class _main_screenState extends State<main_screen> {
   }
 
   Future updateGoal(
-      {required String goal_name, required String description, required String LT_goal_ID}) async {
+      {required String goal_name,
+      required String description,
+      required String LT_goal_ID}) async {
     print("update!");
     final docGoal = FirebaseFirestore.instance
         .collection('users')
@@ -81,48 +84,50 @@ class _main_screenState extends State<main_screen> {
             actionsPadding: EdgeInsets.all(15),
             actions: [
               Container(
-                        height: 45,
-                        width: MediaQuery.of(context).size.width / 3.5,
-                        child: OutlinedButton(
-                          
-                            style: OutlinedButton.styleFrom(
-                              elevation: 5,
-                                backgroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(25))),
-                            child: Text(
-                              "Cancel",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: 'LexendDeca-Regular',
-                                  fontSize: 12),
-                            ),
-                            onPressed: () => {Navigator.pop(context)}),
-                      ),
-                      Container(
-                        height: 45,
-                        width: MediaQuery.of(context).size.width / 3.5,
-                        child: OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              elevation: 5,
-                              side: BorderSide(width: 0.5, color: Colors.white),
-                              backgroundColor: Colors.red[600],
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(25))),
-                            child: Text(
-                              "Delete",
-                              style: TextStyle(
-                                  fontFamily: 'LexendDeca-Regular',
-                                  fontSize: 12,
-                                  color: Colors.white),
-                            ),
-                            onPressed: () => {
-                                  deleteGoal(LT_goal_ID: goalID),
-                                  Navigator.pop(context)
-                                }),
-                      ),
+                height: 45,
+                width: MediaQuery.of(context).size.width / 3.5,
+                child: OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                        elevation: 5,
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25))),
+                    child: Text(
+                      "Cancel",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontFamily: 'LexendDeca-Regular',
+                          fontSize: 12),
+                    ),
+                    onPressed: () => {Navigator.pop(context)}),
+              ),
+              Container(
+                height: 45,
+                width: MediaQuery.of(context).size.width / 3.5,
+                child: OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                        elevation: 5,
+                        side: BorderSide(width: 0.5, color: Colors.white),
+                        backgroundColor: Colors.red[600],
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25))),
+                    child: Text(
+                      "Delete",
+                      style: TextStyle(
+                          fontFamily: 'LexendDeca-Regular',
+                          fontSize: 12,
+                          color: Colors.white),
+                    ),
+                    onPressed: () => {
+                          deleteGoal(LT_goal_ID: goalID),
+                          Navigator.pop(context)
+                        }),
+              ),
             ],
-            title: Text("Delete Long-Term Goal?", style: TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 16),),
+            title: Text(
+              "Delete Long-Term Goal?",
+              style: TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 16),
+            ),
             content: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -150,7 +155,10 @@ class _main_screenState extends State<main_screen> {
           return AlertDialog(
             insetPadding: EdgeInsets.symmetric(horizontal: 10),
             contentPadding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-            title: Text("Update Long-Term Goal", style: TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 16),),
+            title: Text(
+              "Update Long-Term Goal",
+              style: TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 16),
+            ),
             content: SingleChildScrollView(
               reverse: true,
               child: Column(
@@ -190,8 +198,8 @@ class _main_screenState extends State<main_screen> {
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     child: OutlinedButton(
                       style: OutlinedButton.styleFrom(
-                        backgroundColor: AppColors().red,
-                        elevation: 5,
+                          backgroundColor: AppColors().red,
+                          elevation: 5,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15))),
                       child: Row(
@@ -236,13 +244,21 @@ class _main_screenState extends State<main_screen> {
           child: StreamBuilder(
               stream: readLTgoals(),
               builder: (context, snapshot) {
-                if(snapshot.connectionState == ConnectionState.waiting){
-                  return Center(child: CircularProgressIndicator(),);
-                }
-                else if(!snapshot.hasData || snapshot.data!.isEmpty){
-                  return Center(child: Text("No Long-Term Goals yet.", style: TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 12),),);
-                }
-                else{
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: Container(
+                      height: 90,
+                      child: Image.asset('assets/loading.gif')),
+                  );
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(
+                    child: Text(
+                      "No Long-Term Goals yet.",
+                      style: TextStyle(
+                          fontFamily: 'LexendDeca-Regular', fontSize: 12),
+                    ),
+                  );
+                } else {
                   final goals = snapshot.data!;
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -295,12 +311,10 @@ class _main_screenState extends State<main_screen> {
               color: Colors.white,
             )),
       ],
-
       child: Padding(
           padding: const EdgeInsets.all(5.0),
           child: Container(
               decoration: BoxDecoration(
-                  
                   border: Border.all(
                       color: Colors.black87.withOpacity(0.2), width: 1),
                   borderRadius: BorderRadius.circular(25),
@@ -309,7 +323,7 @@ class _main_screenState extends State<main_screen> {
                 children: [
                   CachedNetworkImage(
                     placeholder: (context, url) =>
-                        const CircularProgressIndicator(),
+                        Center(child: Container(height: 90, child: Image.asset('assets/loading.gif'),)),
                     imageUrl: LT_goal_info.LT_goal_banner,
                     imageBuilder: ((context, imageProvider) => Container(
                           clipBehavior: Clip.hardEdge,
@@ -374,9 +388,7 @@ class _main_screenState extends State<main_screen> {
                 LT_goal_desc: doc.data()['LT_goal_desc'],
                 LT_goal_name: doc.data()['LT_goal_name'],
                 LT_goal_banner: doc.data()['LT_goal_banner'],
-                LT_goal_status: doc.data()['LT_goal_status']
-                ))
-                
+                LT_goal_status: doc.data()['LT_goal_status']))
             .toList());
   }
 }

@@ -116,7 +116,7 @@ class _add_note_screenState extends State<add_note_screen> {
                   maxLines: 1,
                   controller: note_title,
                   decoration: InputDecoration(
-                      border: InputBorder.none, hintText: "Note Title"),
+                      border: InputBorder.none, hintText: "Title"),
                 ),
               ),
               SizedBox(
@@ -130,7 +130,7 @@ class _add_note_screenState extends State<add_note_screen> {
                   maxLines: null,
                   controller: note_text,
                   decoration: InputDecoration(
-                      border: InputBorder.none, hintText: "Note content"),
+                      border: InputBorder.none, hintText: "Note"),
                 ),
               ),
             ],

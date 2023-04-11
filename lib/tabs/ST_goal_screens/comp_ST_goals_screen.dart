@@ -869,7 +869,7 @@ class _comp_dashboard_screenState extends State<comp_dashboard_screen> {
             stream: readGoals(),
             builder: (context, snapshot) {
               if(snapshot.connectionState == ConnectionState.waiting){
-                return Center(child: CircularProgressIndicator(),);
+                return Center(child: Container(height: 90, child: Image.asset('assets/loading.gif'),));
               }
               else if(!snapshot.hasData || snapshot.data!.isEmpty){
                 return Center(child: Text("No Short-Term Goals yet.", style: TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 12)),);

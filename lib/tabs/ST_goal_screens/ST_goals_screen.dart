@@ -8,6 +8,7 @@ import 'package:test_app5/tabs/LT_goal_screens/LT_goals_screen.dart';
 import 'package:test_app5/tabs/LT_goal_tab.dart';
 import '../../ST_goal.dart';
 import '../../documentation_screen.dart';
+import '../../main.dart';
 import '../../theme/app_colors.dart';
 import 'package:focused_menu/focused_menu.dart';
 import '../../LT_goal.dart';
@@ -333,9 +334,7 @@ class _dashboard_screenState extends State<dashboard_screen> {
     showDialog(
       barrierDismissible: false,
         context: context,
-        builder: (context) => Center(
-              child: CircularProgressIndicator(),
-            ));
+        builder: (context) => Center(child: Container(height: 90, child: Image.asset('assets/loading.gif'),)));
     print("NISULOD SYA SA CALCULATE");
     DateTime? startDate;
     DateTime endDate = DateTime.now();
@@ -464,7 +463,7 @@ class _dashboard_screenState extends State<dashboard_screen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Are you sure you want to complete this Long-Term Goal? Once completed, it will be added to the Finished Goals Tab in view-only mode.",
+                    "Are you sure you want to complete this Long-Term Goal? Once completed, it will be added to the Completed Goals Tab in view-only mode.",
                     style: TextStyle(
                         fontFamily: 'LexendDeca-Regular', fontSize: 14),
                     textAlign: TextAlign.justify,
@@ -768,12 +767,8 @@ class _dashboard_screenState extends State<dashboard_screen> {
                               fontFamily: 'LexendDeca-Regular', fontSize: 12),
                         ),
                         onPressed: () async {
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => LT_goal_tab(
-                                      loggedInUser: widget.loggedInUser)),
-                              (route) => false);
+                          Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) => MainPage()));
                         }),
                   ),
                 ],
@@ -824,7 +819,18 @@ class _dashboard_screenState extends State<dashboard_screen> {
                     ],
                   ),
                 ),
+                Tooltip(
+                  height: 50,
+                  showDuration: Duration(seconds: 5),
+                  margin: EdgeInsets.symmetric(horizontal: 20),
+                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                  triggerMode: TooltipTriggerMode.tap,
+                  message: 'To complete a Long-Term Goal, finish all of its Short-Term goals.',
+                  child: Icon(Icons.info, size: 25),
+                  textAlign: TextAlign.center,
+                  ),
                 Container(
+                  // color: Colors.blue[100],
                   width: MediaQuery.of(context).size.width * 0.35,
                   height: MediaQuery.of(context).size.height * 0.12,
                   child: OutlinedButton(
@@ -886,9 +892,7 @@ class _dashboard_screenState extends State<dashboard_screen> {
             stream: readGoals(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
+                return Center(child: Container(height: 90, child: Image.asset('assets/loading.gif'),));
               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                 return Center(
                   child: Text("No Short-Term Goals yet.", style: TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 12)),

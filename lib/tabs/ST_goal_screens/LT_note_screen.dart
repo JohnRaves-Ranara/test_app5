@@ -196,9 +196,7 @@ class _LT_notes_screenState extends State<LT_notes_screen> {
               stream: readLTnotes(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
+                  return Center(child: Container(height: 90, child: Image.asset('assets/loading.gif'),));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return Center(
                     child: Text("No notes yet.", style: TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 12)),

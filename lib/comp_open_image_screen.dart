@@ -144,12 +144,6 @@ class _comp_open_image_screenState extends State<comp_open_image_screen> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          actions: [
-            IconButton(
-              icon: Icon(Icons.edit_note_rounded),
-              onPressed: null,
-            )
-          ],
           backgroundColor: Colors.transparent,
           elevation: 0,
           iconTheme: IconThemeData(color: Colors.black),
@@ -175,7 +169,7 @@ class _comp_open_image_screenState extends State<comp_open_image_screen> {
                         child: CachedNetworkImage(
                           imageUrl: widget.imageURL,
                           placeholder: (context, url) =>
-                              Center(child: const CircularProgressIndicator()),
+                              Center(child: Container(height: 90, child: Image.asset('assets/loading.gif'),)),
                         ),
                       ),
                     ),

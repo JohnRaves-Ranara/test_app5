@@ -27,7 +27,7 @@ class _pet_screenState extends State<pet_screen> {
         .collection('pokemon')
         .doc(widget.loggedInUser.userID);
 
-    if (pokemon_level != 10) {
+    if (pokemon_level != 4) {
       if (pokemon_food >= 10) {
         await doc.update({'pokemon_food': pokemon_food - 10});
         if (pokemon_exp < 90) {
@@ -56,9 +56,7 @@ class _pet_screenState extends State<pet_screen> {
                 .snapshots(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
+                return Center(child: Container(height: 90, child: Image.asset('assets/loading.gif'),));
               }
               return ListView.builder(
                 physics: NeverScrollableScrollPhysics(),
@@ -102,7 +100,7 @@ class _pet_screenState extends State<pet_screen> {
                       SizedBox(
                         height: 20,
                       ),
-                      (pokemon_level > 0 && pokemon_level < 4)
+                      (pokemon_level==1)
                           ? //1,2,3
                           Container(
                               // color: Colors.blue[100],
@@ -124,7 +122,7 @@ class _pet_screenState extends State<pet_screen> {
                                 ],
                               ),
                             )
-                          : (pokemon_level > 3 && pokemon_level < 7)
+                          : (pokemon_level==2)
                               ? //4,5,6
                               Container(
                                   // color: Colors.blue[100],
@@ -149,7 +147,7 @@ class _pet_screenState extends State<pet_screen> {
                                     ],
                                   ),
                                 )
-                              : (pokemon_level > 6 && pokemon_level < 10)
+                              : (pokemon_level==3)
                                   ? //7,8,9
                                   Container(
                                       // color: Colors.blue[100],
@@ -234,7 +232,7 @@ class _pet_screenState extends State<pet_screen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  (pokemon_level != 10)
+                                  (pokemon_level !=4)
                                       ? 'Lvl. ${pokemon_level}'
                                       : 'Lvl. MAX',
                                   style: TextStyle(

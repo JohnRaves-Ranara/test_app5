@@ -145,88 +145,93 @@ class _login_screenState extends State<login_screen> {
         body: Center(
           child: SingleChildScrollView(
             child:
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               Container(
-                  alignment: Alignment.center,
-                  child: Text(
-                    "VisioLife",
-                    style:
-                        TextStyle(fontSize: 48, fontFamily: 'LexendDeca-Bold'),
-                  )),
+                    alignment: Alignment.center,
+                    child: Text(
+                      "VisioLife",
+                      style:
+                          TextStyle(fontSize: 48, fontFamily: 'LexendDeca-Bold'),
+                    )),
+                    SizedBox(height: 10,),
+              Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      "From vision to reality.",
+                      style:
+                          TextStyle(fontSize: 14, fontFamily: 'LexendDeca-Regular'),
+                    )),
               SizedBox(
-                height: 55,
+                  height: 55,
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: TextField(
-                  style: TextStyle(fontFamily: 'LexendDeca-Regular'),
-                  controller: emailController,
-                  decoration: InputDecoration(
-                      labelStyle: TextStyle(color: Colors.grey[800]),
-                      enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey)),
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: AppColors().red)),
-                      labelText: "E-mail"),
-                ),
+              TextField(
+                style: TextStyle(fontFamily: 'LexendDeca-Regular'),
+                controller: emailController,
+                decoration: InputDecoration(
+                    labelStyle: TextStyle(color: Colors.grey[800]),
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey)),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: AppColors().red)),
+                    labelText: "E-mail"),
               ),
               SizedBox(
-                height: 20,
+                  height: 20,
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: TextField(
-                  style: TextStyle(fontFamily: 'LexendDeca-Regular'),
-                  controller: passwordController,
-                  decoration: InputDecoration(
-                      labelStyle: TextStyle(color: Colors.grey[800]),
-                      enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey)),
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: AppColors().red)),
-                      labelText: "Password"),
-                ),
+              TextField(
+                style: TextStyle(fontFamily: 'LexendDeca-Regular'),
+                controller: passwordController,
+                decoration: InputDecoration(
+                    labelStyle: TextStyle(color: Colors.grey[800]),
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey)),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: AppColors().red)),
+                    labelText: "Password"),
               ),
               SizedBox(height: 50),
               Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 60,
-                  ),
-                  width: MediaQuery.of(context).size.width,
-                  height: 40,
-                  child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
-                          backgroundColor: AppColors().red),
-                      onPressed: isLoggingIn ? null : logIn,
-                      child: Text(
-                        "LOGIN",
-                        style: TextStyle(
-                            fontFamily: 'LexendDeca-SemiBold', fontSize: 16),
-                      ))),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 60,
+                    ),
+                    width: MediaQuery.of(context).size.width,
+                    height: 40,
+                    child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            backgroundColor: AppColors().red),
+                        onPressed: isLoggingIn ? null : logIn,
+                        child: Text(
+                          "LOGIN",
+                          style: TextStyle(
+                              fontFamily: 'LexendDeca-SemiBold', fontSize: 16),
+                        ))),
               SizedBox(
-                height: 20,
+                  height: 20,
               ),
               RichText(
-                  text: TextSpan(children: [
-                TextSpan(
-                    text: 'Don\'t have an account? ',
-                    style: TextStyle(
-                        color: Colors.black, fontFamily: 'LexendDeca-Regular')),
-                TextSpan(
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => signup_screen())),
-                    text: 'Sign Up here!',
-                    style: TextStyle(
-                        fontFamily: 'LexendDeca-Regular',
-                        decoration: TextDecoration.underline,
-                        color: AppColors().red))
+                    text: TextSpan(children: [
+                  TextSpan(
+                      text: 'Don\'t have an account? ',
+                      style: TextStyle(
+                          color: Colors.black, fontFamily: 'LexendDeca-Regular')),
+                  TextSpan(
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => signup_screen())),
+                      text: 'Sign Up here!',
+                      style: TextStyle(
+                          fontFamily: 'LexendDeca-Regular',
+                          decoration: TextDecoration.underline,
+                          color: AppColors().red))
               ]))
             ]),
+                ),
           ),
         ),
       ),

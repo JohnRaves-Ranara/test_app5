@@ -2,10 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_app5/add_note_screen.dart';
 // import 'package:test_app5/choosePet_screen.dart';
 import 'package:test_app5/login_screen.dart';
+import 'package:test_app5/onboardingScreen.dart';
 import 'package:test_app5/tabs/LT_goal_tab.dart';
+import 'package:test_app5/test.dart';
 
 import 'Current_User.dart';
 // import 'package:test_app5/test.dart';
@@ -14,18 +17,24 @@ import 'Current_User.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(const MyApp());
+  final prefs = await SharedPreferences.getInstance();
+  final showMainPage = prefs.getBool('showMainPage') ?? false;
+  runApp(MyApp(showMainPage: showMainPage));
 }
 final navigatorKey = GlobalKey<NavigatorState>();
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool? showMainPage;
+  const MyApp({
+    Key? key,
+    this.showMainPage
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      home: MainPage(),
+      home: showMainPage! ? MainPage() : onBoardingScreen(),
     );
   }
 }
@@ -81,7 +90,7 @@ class MainPage extends StatelessWidget {
                         current_user: curr_User,
                       );
                     } else {
-                      return Center(child: CircularProgressIndicator());
+                      return Center(child: Container(height: 90, child: Image.asset('assets/loading.gif'),));
                     }
                   },
                 );

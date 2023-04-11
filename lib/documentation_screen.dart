@@ -25,52 +25,6 @@ class documentation_screen extends StatefulWidget {
 }
 
 class _documentation_screenState extends State<documentation_screen> {
-  //OPEN IMAGE POPUP
-  openImage(BuildContext context, String imageURL, String imageDescription) {
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            content: SingleChildScrollView(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CachedNetworkImage(
-                        placeholder: (context, url) => Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                        imageUrl: imageURL,
-                        imageBuilder: ((context, imageProvider) => Container(
-                              constraints: BoxConstraints(
-                                  maxWidth: MediaQuery.of(context).size.width,
-                                  maxHeight: 200),
-                              decoration: BoxDecoration(
-                                  image: DecorationImage(image: imageProvider)),
-                            ))),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Container(
-                      padding: EdgeInsets.all(15),
-                      alignment: Alignment.topLeft,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          color: Colors.blue[300]!.withOpacity(0.1)),
-                      height: MediaQuery.of(context).size.height / 4,
-                      width: MediaQuery.of(context).size.width,
-                      child: SingleChildScrollView(
-                          child: Text(
-                        "${imageDescription}",
-                        style: TextStyle(
-                            fontFamily: 'LexendDeca-Regular', fontSize: 12),
-                      )),
-                    )
-                  ]),
-            ),
-          );
-        });
-  }
 
   decreaseImageCount() async {
     int? imageCount;
@@ -261,6 +215,8 @@ class _documentation_screenState extends State<documentation_screen> {
                   height: MediaQuery.of(context).size.height * 0.12,
                   child: OutlinedButton(
                     style: OutlinedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      elevation: 5,
                         side: BorderSide(width: 0.5, color: Colors.black87),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15))),
@@ -319,9 +275,7 @@ class _documentation_screenState extends State<documentation_screen> {
                   .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
+                  return Center(child: Container(height: 90, child: Image.asset('assets/loading.gif'),));
                 } else if (!snapshot.hasData || snapshot.data!.size == 0) {
                   return (const Center(child: Text("No image/s uploaded.")));
                 } else {
@@ -372,8 +326,7 @@ class _documentation_screenState extends State<documentation_screen> {
                                 borderRadius: BorderRadius.circular(10),
                                 child: CachedNetworkImage(
                                   imageUrl: imageURL,
-                                  placeholder: (context, url) => Center(
-                                      child: const CircularProgressIndicator()),
+                                  placeholder: (context, url) => Center(child: Container(height: 90, child: Image.asset('assets/loading.gif'),)),
                                 ),
                               )),
                         );

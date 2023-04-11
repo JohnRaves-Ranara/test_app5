@@ -240,8 +240,7 @@ class _completed_LT_goalsState extends State<completed_LT_goals> {
               stream: readLTgoals(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: CircularProgressIndicator(),
+                  return Center(child: Container(height: 90, child: Image.asset('assets/loading.gif'),),
                   );
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return Center(
@@ -306,7 +305,7 @@ class _completed_LT_goalsState extends State<completed_LT_goals> {
                     children: [
                       CachedNetworkImage(
                         placeholder: (context, url) =>
-                            const CircularProgressIndicator(),
+                            Center(child: Container(height: 90, child: Image.asset('assets/loading.gif'),)),
                         imageUrl: LT_goal_info.LT_goal_banner,
                         imageBuilder: ((context, imageProvider) => Container(
                               clipBehavior: Clip.hardEdge,

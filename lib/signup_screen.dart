@@ -59,9 +59,7 @@ class _signup_screenState extends State<signup_screen> {
     showDialog(
       barrierDismissible: false,
         context: context,
-        builder: (context) => Center(
-              child: CircularProgressIndicator(),
-            ));
+        builder: (context) => Center(child: Container(height: 90, child: Image.asset('assets/loading.gif'),)));
     setState(() {
       isSigningIn = true;
     });

@@ -223,6 +223,8 @@ class _add_LTGoal_screenState extends State<add_LTGoal_screen> {
                 width: MediaQuery.of(context).size.width / 4,
                 child: OutlinedButton(
                     style: OutlinedButton.styleFrom(
+                      elevation: 5,
+                      backgroundColor: Colors.white,
                       side: BorderSide(color: Colors.black87, width: 0.5),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(25)),
@@ -278,6 +280,8 @@ class _add_LTGoal_screenState extends State<add_LTGoal_screen> {
               padding: EdgeInsets.symmetric(horizontal: 30),
               child: OutlinedButton(
                 style: OutlinedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  elevation: 5,
                     side: BorderSide(
                         width: 0.5, color: Colors.black87.withOpacity(0.4)),
                     shape: RoundedRectangleBorder(
