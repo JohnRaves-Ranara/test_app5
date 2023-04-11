@@ -155,7 +155,7 @@ class _signup_screenState extends State<signup_screen> {
       });
     }
   }
-
+  var obscureText = true;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -210,9 +210,21 @@ class _signup_screenState extends State<signup_screen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: TextField(
+                  obscureText: obscureText,
                   style: TextStyle(fontFamily: 'LexendDeca-Regular'),
                   controller: passwordController,
                   decoration: InputDecoration(
+                    suffixIcon: GestureDetector(
+                    onTap: (){
+                      setState(() {
+                        obscureText = !obscureText;
+                      });
+                    },
+                    child: obscureText ?
+                    Icon(Icons.visibility_off, color: Colors.grey, size: 25,)
+                    :
+                    Icon(Icons.visibility, color: Colors.grey, size: 25,)
+                  ),
                       labelStyle: TextStyle(color: Colors.grey[800]),
                       enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey)),
@@ -251,7 +263,12 @@ class _signup_screenState extends State<signup_screen> {
                         color: Colors.black, fontFamily: 'LexendDeca-Regular')),
                 TextSpan(
                     recognizer: TapGestureRecognizer()
-                      ..onTap = () => Navigator.pop(context),
+                      ..onTap = () {
+                        usernameController.clear();
+                        passwordController.clear();
+                        emailController.clear();
+                        Navigator.pop(context);
+                        },
                     text: 'Login Here!',
                     style: TextStyle(
                         fontFamily: 'LexendDeca-Regular',

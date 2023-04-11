@@ -138,100 +138,128 @@ class _login_screenState extends State<login_screen> {
         pet_name: pet_name!);
   }
 
+  var obscureText = true;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         body: Center(
           child: SingleChildScrollView(
-            child:
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "VisioLife",
-                      style:
-                          TextStyle(fontSize: 48, fontFamily: 'LexendDeca-Bold'),
-                    )),
-                    SizedBox(height: 10,),
-              Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "From vision to reality.",
-                      style:
-                          TextStyle(fontSize: 14, fontFamily: 'LexendDeca-Regular'),
-                    )),
-              SizedBox(
-                  height: 55,
-              ),
-              TextField(
-                style: TextStyle(fontFamily: 'LexendDeca-Regular'),
-                controller: emailController,
-                decoration: InputDecoration(
-                    labelStyle: TextStyle(color: Colors.grey[800]),
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey)),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: AppColors().red)),
-                    labelText: "E-mail"),
-              ),
-              SizedBox(
-                  height: 20,
-              ),
-              TextField(
-                style: TextStyle(fontFamily: 'LexendDeca-Regular'),
-                controller: passwordController,
-                decoration: InputDecoration(
-                    labelStyle: TextStyle(color: Colors.grey[800]),
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey)),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: AppColors().red)),
-                    labelText: "Password"),
-              ),
-              SizedBox(height: 50),
-              Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 60,
-                    ),
-                    width: MediaQuery.of(context).size.width,
-                    height: 40,
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)),
-                            backgroundColor: AppColors().red),
-                        onPressed: isLoggingIn ? null : logIn,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                        alignment: Alignment.center,
                         child: Text(
-                          "LOGIN",
+                          "VisioLife",
                           style: TextStyle(
-                              fontFamily: 'LexendDeca-SemiBold', fontSize: 16),
-                        ))),
-              SizedBox(
-                  height: 20,
-              ),
-              RichText(
-                    text: TextSpan(children: [
-                  TextSpan(
-                      text: 'Don\'t have an account? ',
-                      style: TextStyle(
-                          color: Colors.black, fontFamily: 'LexendDeca-Regular')),
-                  TextSpan(
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => signup_screen())),
-                      text: 'Sign Up here!',
-                      style: TextStyle(
-                          fontFamily: 'LexendDeca-Regular',
-                          decoration: TextDecoration.underline,
-                          color: AppColors().red))
-              ]))
-            ]),
-                ),
+                              fontSize: 48, fontFamily: 'LexendDeca-Bold'),
+                        )),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                        alignment: Alignment.center,
+                        child: Text(
+                          "From vision to reality.",
+                          style: TextStyle(
+                              fontSize: 14, fontFamily: 'LexendDeca-Regular'),
+                        )),
+                    SizedBox(
+                      height: 55,
+                    ),
+                    TextField(
+                      style: TextStyle(fontFamily: 'LexendDeca-Regular'),
+                      controller: emailController,
+                      decoration: InputDecoration(
+                          labelStyle: TextStyle(color: Colors.grey[800]),
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey)),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: AppColors().red)),
+                          labelText: "E-mail"),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    TextField(
+                      style: TextStyle(fontFamily: 'LexendDeca-Regular'),
+                      obscureText: obscureText,
+                      controller: passwordController,
+                      decoration: InputDecoration(
+                          suffixIcon: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  obscureText = !obscureText;
+                                });
+                              },
+                              child: obscureText
+                                  ? Icon(
+                                      Icons.visibility_off,
+                                      color: Colors.grey,
+                                      size: 25,
+                                    )
+                                  : Icon(
+                                      Icons.visibility,
+                                      color: Colors.grey,
+                                      size: 25,
+                                    )),
+                          labelStyle: TextStyle(color: Colors.grey[800]),
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey)),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: AppColors().red)),
+                          labelText: "Password"),
+                    ),
+                    SizedBox(height: 50),
+                    Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 60,
+                        ),
+                        width: MediaQuery.of(context).size.width,
+                        height: 40,
+                        child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10)),
+                                backgroundColor: AppColors().red),
+                            onPressed: isLoggingIn ? null : logIn,
+                            child: Text(
+                              "LOGIN",
+                              style: TextStyle(
+                                  fontFamily: 'LexendDeca-SemiBold',
+                                  fontSize: 16),
+                            ))),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    RichText(
+                        text: TextSpan(children: [
+                      TextSpan(
+                          text: 'Don\'t have an account? ',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontFamily: 'LexendDeca-Regular')),
+                      TextSpan(
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              passwordController.clear();
+                              emailController.clear();
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => signup_screen()));
+                            },
+                          text: 'Sign Up here!',
+                          style: TextStyle(
+                              fontFamily: 'LexendDeca-Regular',
+                              decoration: TextDecoration.underline,
+                              color: AppColors().red))
+                    ]))
+                  ]),
+            ),
           ),
         ),
       ),
