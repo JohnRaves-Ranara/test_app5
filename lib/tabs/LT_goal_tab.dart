@@ -174,7 +174,7 @@ class _LT_goal_tabState extends State<LT_goal_tab> {
                       fontFamily: 'LexendDeca-Regular',
                       fontSize: 12),
                 ),
-                onPressed: () => Navigator.pop(context, false)),
+                onPressed: () => Navigator.of(context).pop(true)),
           ),
           Container(
             height: 45,
@@ -190,7 +190,7 @@ class _LT_goal_tabState extends State<LT_goal_tab> {
                 style:
                     TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 12),
               ),
-              onPressed: () => Navigator.pop(context, true),
+              onPressed: () => Navigator.of(context).pop(true),
             ),
           )
         ],
@@ -243,25 +243,33 @@ class _LT_goal_tabState extends State<LT_goal_tab> {
               child: Center(
                 child: Builder(
                   builder: (BuildContext context) {
-                    return IconButton(
-                      iconSize: 300,
-                      icon: Text('VisioLife',
-                          overflow: TextOverflow.fade,
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontFamily: 'LexendDeca-Bold',
-                              fontSize: 14)),
-                      onPressed: () {
-                        Scaffold.of(context).openDrawer();
-                      },
-                      tooltip: MaterialLocalizations.of(context)
-                          .openAppDrawerTooltip,
+                    return Container(
+                      // color: Colors.orange[100],
+                      child: IconButton(
+                        iconSize: 300,
+                        icon: Row(
+                          children: [
+                            Text('VisioLife',
+                                overflow: TextOverflow.fade,
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontFamily: 'LexendDeca-Bold',
+                                    fontSize: 16)),
+                            SizedBox(width: 10,),
+                            Icon(Icons.info, size: 20,),
+                          ],
+                        ),
+                        onPressed: () {
+                          Scaffold.of(context).openDrawer();
+                        },
+                        tooltip: "Open Drawer",
+                      ),
                     );
                   },
                 ),
               ),
             ),
-            leadingWidth: 150,
+            leadingWidth: MediaQuery.of(context).size.width*0.45,
             toolbarHeight: 100,
             actions: [
               (groupvalue == 1)
@@ -339,7 +347,7 @@ class _LT_goal_tabState extends State<LT_goal_tab> {
                                           'Earn berries by completing Long-Term Goals!',
                                       showDuration: Duration(seconds: 5),
                                       child: Icon(
-                                        Icons.info,
+                                        Icons.help,
                                         size: 20,
                                       ),
                                       textAlign: TextAlign.center,

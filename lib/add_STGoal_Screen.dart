@@ -98,7 +98,7 @@ class _addGoalScreenState extends State<addGoalScreen> {
                 decoration: InputDecoration(
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15)),
-                    hintText: "Goal Name"),
+                    hintText: "Short-Term Goal Name"),
                 controller: goalNameController,
               ),
             ),

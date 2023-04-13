@@ -252,7 +252,7 @@ class _add_LTGoal_screenState extends State<add_LTGoal_screen> {
                 decoration: InputDecoration(
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15)),
-                    hintText: "Goal Name",
+                    hintText: "Long-Term Goal Name",
                     counterText: ""),
                 controller: goalNameController,
               ),

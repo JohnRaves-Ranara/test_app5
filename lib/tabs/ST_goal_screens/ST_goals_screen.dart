@@ -6,6 +6,7 @@ import 'package:test_app5/add_STGoal_Screen.dart';
 import 'package:test_app5/login_screen.dart';
 import 'package:test_app5/tabs/LT_goal_screens/LT_goals_screen.dart';
 import 'package:test_app5/tabs/LT_goal_tab.dart';
+import 'package:test_app5/tabs/ST_goal_screens/STG_instructions.dart';
 import '../../ST_goal.dart';
 import '../../documentation_screen.dart';
 import '../../main.dart';
@@ -256,85 +257,15 @@ class _dashboard_screenState extends State<dashboard_screen> {
         }));
   }
 
-  // //DELETE POPUP
-  // Future<bool?> showLogoutDialog(BuildContext context) async {
-  //   return showDialog(
-  //       context: context,
-  //       builder: (context) {
-  //         return AlertDialog(
-  //           title: Text("Logout"),
-  //           content: SingleChildScrollView(
-  //             child: Column(
-  //               mainAxisAlignment: MainAxisAlignment.center,
-  //               children: [
-  //                 Text(
-  //                   "Are you sure you want to logout?",
-  //                   style: TextStyle(
-  //                       fontFamily: 'LexendDeca-Regular', fontSize: 14),
-  //                 ),
-  //                 SizedBox(
-  //                   height: 20,
-  //                 ),
-  //                 Row(
-  //                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  //                   children: [
-  //                     Container(
-  //                       height: 45,
-  //                       width: MediaQuery.of(context).size.width / 3.5,
-  //                       child: ElevatedButton(
-  //                           style: ElevatedButton.styleFrom(
-  //                               elevation: 5,
-  //                               backgroundColor: Colors.white,
-  //                               shape: RoundedRectangleBorder(
-  //                                   borderRadius: BorderRadius.circular(25))),
-  //                           child: Text(
-  //                             "Cancel",
-  //                             style: TextStyle(
-  //                                 color: Colors.black,
-  //                                 fontFamily: 'LexendDeca-Regular',
-  //                                 fontSize: 12),
-  //                           ),
-  //                           onPressed: () => {Navigator.pop(context, false)}),
-  //                     ),
-  //                     SizedBox(
-  //                       width: 20,
-  //                     ),
-  //                     Container(
-  //                       height: 45,
-  //                       width: MediaQuery.of(context).size.width / 3.5,
-  //                       child: ElevatedButton(
-  //                           style: ElevatedButton.styleFrom(
-  //                               elevation: 5,
-  //                               backgroundColor: AppColors().red,
-  //                               shape: RoundedRectangleBorder(
-  //                                   borderRadius: BorderRadius.circular(25))),
-  //                           child: Text(
-  //                             "Logout",
-  //                             style: TextStyle(
-  //                                 fontFamily: 'LexendDeca-Regular',
-  //                                 fontSize: 12),
-  //                           ),
-  //                           onPressed: () => {
-  //                                 Navigator.push(
-  //                                     context,
-  //                                     MaterialPageRoute(
-  //                                         builder: (context) => login_screen()))
-  //                               }),
-  //                     ),
-  //                   ],
-  //                 )
-  //               ],
-  //             ),
-  //           ),
-  //         );
-  //       });
-  // }
-
   Future<Map<String, int>> calculateRewards() async {
     showDialog(
-      barrierDismissible: false,
+        barrierDismissible: false,
         context: context,
-        builder: (context) => Center(child: Container(height: 90, child: Image.asset('assets/loading.gif'),)));
+        builder: (context) => Center(
+                child: Container(
+              height: 90,
+              child: Image.asset('assets/loading.gif'),
+            )));
     print("NISULOD SYA SA CALCULATE");
     DateTime? startDate;
     DateTime endDate = DateTime.now();
@@ -499,7 +430,7 @@ class _dashboard_screenState extends State<dashboard_screen> {
             actionsPadding: EdgeInsets.all(15),
             insetPadding: EdgeInsets.symmetric(horizontal: 20),
             title: Text(
-              "Error",
+              "Invalid Action",
               style: TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 16),
             ),
             actions: [
@@ -767,8 +698,7 @@ class _dashboard_screenState extends State<dashboard_screen> {
                               fontFamily: 'LexendDeca-Regular', fontSize: 12),
                         ),
                         onPressed: () async {
-                          Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) => MainPage()));
+                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> MainPage()), (route) => false);
                         }),
                   ),
                 ],
@@ -819,16 +749,40 @@ class _dashboard_screenState extends State<dashboard_screen> {
                     ],
                   ),
                 ),
-                Tooltip(
-                  height: 50,
-                  showDuration: Duration(seconds: 5),
-                  margin: EdgeInsets.symmetric(horizontal: 20),
-                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-                  triggerMode: TooltipTriggerMode.tap,
-                  message: 'To complete a Long-Term Goal, finish all of its Short-Term goals.',
-                  child: Icon(Icons.info, size: 25),
-                  textAlign: TextAlign.center,
-                  ),
+                IconButton(
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            actionsPadding: EdgeInsets.only(right:10, bottom: 10, left: 10),
+                            contentPadding: EdgeInsets.only(left: 10, right: 10,),
+                            // contentPadding: EdgeInsets.zero,
+                            content: STG_instructions(),
+                            actions: [
+                              Container(
+                                height: 45,
+                                width: MediaQuery.of(context).size.width,
+                                child: OutlinedButton(
+                                  style: OutlinedButton.styleFrom(
+                                    elevation: 5,
+                                    backgroundColor: AppColors().red,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(25)
+                                    )
+                                  ),
+                                  child: Text("Got It!", style: TextStyle(color: Colors.white, fontSize: 14, fontFamily: 'LexendDeca-Regular'),),
+                                  onPressed: () => Navigator.pop(context),
+                                ),
+                              )
+                            ],
+                          );
+                        });
+                  },
+                  icon: Icon(Icons.info),
+                  iconSize: 25,
+                  splashRadius: 20,
+                ),
                 Container(
                   // color: Colors.blue[100],
                   width: MediaQuery.of(context).size.width * 0.35,
@@ -892,10 +846,16 @@ class _dashboard_screenState extends State<dashboard_screen> {
             stream: readGoals(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: Container(height: 90, child: Image.asset('assets/loading.gif'),));
+                return Center(
+                    child: Container(
+                  height: 90,
+                  child: Image.asset('assets/loading.gif'),
+                ));
               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                 return Center(
-                  child: Text("No Short-Term Goals yet.", style: TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 12)),
+                  child: Text("No Short-Term Goals yet.",
+                      style: TextStyle(
+                          fontFamily: 'LexendDeca-Regular', fontSize: 12)),
                 );
               } else {
                 final goals = snapshot.data!;

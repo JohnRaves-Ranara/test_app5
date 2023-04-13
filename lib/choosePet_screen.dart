@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:test_app5/showPetConfirmed_screen.dart';
+import 'package:test_app5/theme/app_colors.dart';
 import 'Current_User.dart';
 import 'tabs/LT_goal_tab.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -51,7 +52,7 @@ class _choosePet_ScreenState extends State<choosePet_Screen> {
                 child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                         elevation: 5,
-                        backgroundColor: Colors.blue,
+                        backgroundColor: AppColors().red,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(25))),
                     child: Text(
@@ -296,8 +297,8 @@ class _choosePet_ScreenState extends State<choosePet_Screen> {
                 "Confirm",
                 style: TextStyle(
                     fontFamily: 'LexendDeca-Bold',
-                    fontSize: 20,
-                    color: Colors.black87),
+                    fontSize: 18,
+                    color: Colors.black),
               ),
               style: OutlinedButton.styleFrom(
                   shape: RoundedRectangleBorder(
