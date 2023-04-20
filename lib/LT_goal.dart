@@ -13,7 +13,7 @@ class LT_goal{
     'LT_goal_name' : LT_goal_name,
     'LT_goal_desc' : LT_goal_desc,
     'LT_goal_banner' : LT_goal_banner,
-    'LT_goal_status' : LT_goal_status
+    'LT_goal_status' : LT_goal_status,
   };
 
 
@@ -22,7 +22,7 @@ class LT_goal{
     LT_goal_name: json['LT_goal_name'],
     LT_goal_desc: json['LT_goal_desc'],
     LT_goal_banner: json['LT_goal_banner'],
-    LT_goal_status: json['LT_goal_status']
+    LT_goal_status: json['LT_goal_status'],
   );
 }
 

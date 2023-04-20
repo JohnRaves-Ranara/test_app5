@@ -9,6 +9,7 @@ import 'package:test_app5/login_screen.dart';
 import 'package:test_app5/onboardingScreen.dart';
 import 'package:test_app5/tabs/LT_goal_tab.dart';
 import 'package:test_app5/test.dart';
+import 'package:test_app5/test_2.dart';
 
 import 'Current_User.dart';
 // import 'package:test_app5/test.dart';
@@ -35,6 +36,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       home: showMainPage! ? MainPage() : onBoardingScreen(),
+      // home: test_2(),
     );
   }
 }

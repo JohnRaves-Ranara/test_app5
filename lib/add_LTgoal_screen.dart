@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -23,6 +25,9 @@ class _add_LTGoal_screenState extends State<add_LTGoal_screen> {
   TextEditingController goalNameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   File? pickedImage;
+      List<String> colors = [
+      'orange', 'purple', 'blue'
+    ];
 
   @override
   void dispose() {
@@ -43,7 +48,7 @@ class _add_LTGoal_screenState extends State<add_LTGoal_screen> {
 
   Future createGoal(
       {required String goal_name,
-      required String description,
+      String? description,
       required BuildContext context}) async {
     String errorMessage;
     try {
@@ -52,20 +57,36 @@ class _add_LTGoal_screenState extends State<add_LTGoal_screen> {
           .doc(widget.loggedInUser.userID)
           .collection('longterm_goals')
           .doc();
+      if (pickedImage != null) {
+        print("DILI NULL AND PICKED IMAGE");
+        String goal_banner_URL = await uploadImage(docGoal.id);
+        final json = {
+          'LT_goal_ID': docGoal.id,
+          'LT_goal_name': goal_name,
+          'LT_goal_desc': description,
+          'LT_goal_banner': goal_banner_URL,
+          'LT_goal_status': 'Ongoing',
+          'startDate': DateTime.now().toString(),
+          'endDate': "",
+          'image_count': 0
+        };
 
-      String goal_banner_URL = await uploadImage(docGoal.id);
-      final json = {
-        'LT_goal_ID': docGoal.id,
-        'LT_goal_name': goal_name,
-        'LT_goal_desc': description,
-        'LT_goal_banner': goal_banner_URL,
-        'LT_goal_status': 'Ongoing',
-        'startDate': DateTime.now().toString(),
-        'endDate': "",
-        'image_count': 0
-      };
+        await docGoal.set(json);
+      } else {
+        print("HALA NULL AND PICKED IMAGE");
+        final json = {
+          'LT_goal_ID': docGoal.id,
+          'LT_goal_name': goal_name,
+          'LT_goal_desc': description,
+          'LT_goal_banner': colors[Random().nextInt(colors.length)].toString(),
+          'LT_goal_status': 'Ongoing',
+          'startDate': DateTime.now().toString(),
+          'endDate': "",
+          'image_count': 0
+        };
 
-      await docGoal.set(json);
+        await docGoal.set(json);
+      }
     } catch (e) {
       if (e is FirebaseException) {
         errorMessage = e.message.toString();
@@ -145,13 +166,16 @@ class _add_LTGoal_screenState extends State<add_LTGoal_screen> {
                     onPressed: () => {Navigator.pop(context)}),
               ),
             ],
-            title: Text("Invalid", style: TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 16),),
+            title: Text(
+              "Invalid",
+              style: TextStyle(fontFamily: 'LexendDeca-Bold', fontSize: 16),
+            ),
             content: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Please fill out all the necessary information.",
+                    "Please provide a name for your Long-Term Goal.",
                     style: TextStyle(
                         fontFamily: 'LexendDeca-Regular', fontSize: 14),
                   ),
@@ -252,7 +276,7 @@ class _add_LTGoal_screenState extends State<add_LTGoal_screen> {
                 decoration: InputDecoration(
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15)),
-                    hintText: "Long-Term Goal Name",
+                    hintText: "Long-Term Goal Name (Required)",
                     counterText: ""),
                 controller: goalNameController,
               ),
@@ -280,8 +304,8 @@ class _add_LTGoal_screenState extends State<add_LTGoal_screen> {
               padding: EdgeInsets.symmetric(horizontal: 30),
               child: OutlinedButton(
                 style: OutlinedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  elevation: 5,
+                    backgroundColor: Colors.white,
+                    elevation: 5,
                     side: BorderSide(
                         width: 0.5, color: Colors.black87.withOpacity(0.4)),
                     shape: RoundedRectangleBorder(
@@ -302,9 +326,7 @@ class _add_LTGoal_screenState extends State<add_LTGoal_screen> {
                   ],
                 ),
                 onPressed: () => {
-                  if (goalNameController.text.isNotEmpty &&
-                      descriptionController.text.isNotEmpty &&
-                      pickedImage != null)
+                  if (goalNameController.text.isNotEmpty)
                     {
                       createGoal(
                           context: context,

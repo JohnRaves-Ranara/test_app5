@@ -50,7 +50,7 @@ class _addGoalScreenState extends State<addGoalScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Please fill out all the necessary information.",
+                    "Please provide a name for your Short-Term Goal.",
                     style: TextStyle(
                         fontFamily: 'LexendDeca-Regular', fontSize: 14),
                   ),
@@ -145,8 +145,7 @@ class _addGoalScreenState extends State<addGoalScreen> {
                     ],
                   ),
                   onPressed: () => {
-                        if (goalNameController.text.isNotEmpty &&
-                            descriptionController.text.isNotEmpty)
+                        if (goalNameController.text.isNotEmpty)
                           {
                             createGoal(
                                 goal_name: goalNameController.text.trim(),
