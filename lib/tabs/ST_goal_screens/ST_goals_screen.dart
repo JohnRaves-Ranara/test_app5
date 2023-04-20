@@ -732,7 +732,7 @@ class _dashboard_screenState extends State<dashboard_screen> {
                     children: [
                       Text("Goal Description:",
                           style: TextStyle(
-                              fontFamily: 'LexendDeca-Bold', fontSize: 10)),
+                              fontFamily: 'LexendDeca-Bold', fontSize: 11)),
                       SizedBox(
                         height: 5,
                       ),
@@ -740,7 +740,7 @@ class _dashboard_screenState extends State<dashboard_screen> {
                         widget.LT_goal_info.LT_goal_desc,
                         style: TextStyle(
                           fontFamily: 'LexendDeca-ExtraLight',
-                          fontSize: 8,
+                          fontSize: 10,
                         ),
                         maxLines: 7,
                         overflow: TextOverflow.ellipsis,
