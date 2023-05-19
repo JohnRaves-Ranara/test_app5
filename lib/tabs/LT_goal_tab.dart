@@ -174,7 +174,7 @@ class _LT_goal_tabState extends State<LT_goal_tab> {
                       fontFamily: 'LexendDeca-Regular',
                       fontSize: 12),
                 ),
-                onPressed: () => Navigator.of(context).pop(true)),
+                onPressed: () => Navigator.of(context).pop(false)),
           ),
           Container(
             height: 45,
