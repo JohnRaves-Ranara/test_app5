@@ -174,7 +174,7 @@ class _login_screenState extends State<login_screen> {
                       style: TextStyle(fontFamily: 'LexendDeca-Regular'),
                       controller: emailController,
                       decoration: InputDecoration(
-                          labelStyle: TextStyle(color: Colors.grey[800]),
+                          labelStyle: TextStyle(color: Colors.grey[800],fontFamily: 'LexendDeca-Regular'),
                           enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.grey)),
                           focusedBorder: OutlineInputBorder(
@@ -206,7 +206,7 @@ class _login_screenState extends State<login_screen> {
                                       color: Colors.grey,
                                       size: 25,
                                     )),
-                          labelStyle: TextStyle(color: Colors.grey[800]),
+                          labelStyle: TextStyle(color: Colors.grey[800],fontFamily: 'LexendDeca-Regular'),
                           enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.grey)),
                           focusedBorder: OutlineInputBorder(
@@ -230,7 +230,9 @@ class _login_screenState extends State<login_screen> {
                               "LOGIN",
                               style: TextStyle(
                                   fontFamily: 'LexendDeca-SemiBold',
-                                  fontSize: 16),
+                                  fontSize: 16,
+                                  color: Colors.white
+                                  ),
                             ))),
                     SizedBox(
                       height: 20,

@@ -175,7 +175,7 @@ class _signup_screenState extends State<signup_screen> {
                   style: TextStyle(fontFamily: 'LexendDeca-Regular'),
                   controller: usernameController,
                   decoration: InputDecoration(
-                      labelStyle: TextStyle(color: Colors.grey[800]),
+                      labelStyle: TextStyle(color: Colors.grey[800], fontFamily: 'LexendDeca-Regular'),
                       enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey)),
                       focusedBorder: OutlineInputBorder(
@@ -192,7 +192,7 @@ class _signup_screenState extends State<signup_screen> {
                   style: TextStyle(fontFamily: 'LexendDeca-Regular'),
                   controller: emailController,
                   decoration: InputDecoration(
-                      labelStyle: TextStyle(color: Colors.grey[800]),
+                      labelStyle: TextStyle(color: Colors.grey[800],fontFamily: 'LexendDeca-Regular'),
                       enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey)),
                       focusedBorder: OutlineInputBorder(
@@ -221,7 +221,7 @@ class _signup_screenState extends State<signup_screen> {
                     :
                     Icon(Icons.visibility, color: Colors.grey, size: 25,)
                   ),
-                      labelStyle: TextStyle(color: Colors.grey[800]),
+                      labelStyle: TextStyle(color: Colors.grey[800],fontFamily: 'LexendDeca-Regular'),
                       enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey)),
                       focusedBorder: OutlineInputBorder(
@@ -245,6 +245,7 @@ class _signup_screenState extends State<signup_screen> {
                     child: Text(
                       "SIGNUP",
                       style: TextStyle(
+                        color: Colors.white,
                           fontFamily: 'LexendDeca-SemiBold', fontSize: 16),
                     )),
               ),

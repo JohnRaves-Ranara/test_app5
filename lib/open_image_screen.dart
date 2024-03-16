@@ -85,7 +85,6 @@ class _open_image_screenState extends State<open_image_screen> {
                   SizedBox(height: 10),
                   Container(
                     height: 45,
-                    width: MediaQuery.of(context).size.width,
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
@@ -97,11 +96,13 @@ class _open_image_screenState extends State<open_image_screen> {
                         children: [
                           Text("Confirm edit",
                               style: TextStyle(
+                                color: Colors.white,
                                   fontFamily: 'LexendDeca-SemiBold',
                                   fontSize: 15)),
                           Icon(
                             Icons.arrow_forward_ios,
                             size: 15,
+                            color: Colors.white,
                           )
                         ],
                       ),

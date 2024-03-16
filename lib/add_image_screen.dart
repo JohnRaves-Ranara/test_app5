@@ -130,80 +130,82 @@ class _add_image_screenState extends State<add_image_screen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.black),
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        centerTitle: true,
-        toolbarHeight: 70,
-        title: Text(
-          "Add Image",
-          style: TextStyle(
-              fontFamily: 'LexendDeca-Bold', fontSize: 18, color: Colors.black),
-        ),
-        actions: [
-          (pickedImage!=null)?
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 7),
-            child: IconButton(
-                splashColor: Colors.grey,
-                onPressed: isUploading ? null : () {upload(context);},
-                icon: Icon(
-                  Icons.check,
-                  size: 30,
-                )),
-          )
-          :
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 7),
-            child: IconButton(
-                splashColor: Colors.grey,
-                onPressed: null,
-                icon: Icon(
-                  Icons.check,
-                  size: 30,
-                )),
-          )
-        ],
-      ),
-      body: SingleChildScrollView(
-        reverse: true,
-        child: Column(
-          children: [
-            SizedBox(
-              height: 20,
-            ),
-            (pickedImage != null)
-                ? Container(
-                    clipBehavior: Clip.hardEdge,
-                    constraints: BoxConstraints(maxHeight: 180, maxWidth: 200),
-                    child: Image.file(
-                      File(pickedImage!.path),
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  )
-                : Container(
-                    height: 200,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: AssetImage('assets/upload.png')),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-            SizedBox(
-              height: 20,
-            ),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          iconTheme: IconThemeData(color: Colors.black),
+          backgroundColor: Colors.transparent,
+          centerTitle: true,
+          toolbarHeight: 70,
+          title: Text(
+            "Add Image",
+            style: TextStyle(
+                fontFamily: 'LexendDeca-Bold', fontSize: 18, color: Colors.black),
+          ),
+          actions: [
+            (pickedImage!=null)?
             Container(
-              height: 40,
-              width: MediaQuery.of(context).size.width / 3,
-              child: OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                      side: BorderSide(color: Colors.black87, width: 0.5),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25))),
+              padding: EdgeInsets.symmetric(horizontal: 7),
+              child: IconButton(
+                  splashColor: Colors.grey,
+                  onPressed: isUploading ? null : () {upload(context);},
+                  icon: Icon(
+                    Icons.check,
+                    size: 30,
+                  )),
+            )
+            :
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 7),
+              child: IconButton(
+                  splashColor: Colors.grey,
+                  onPressed: null,
+                  icon: Icon(
+                    Icons.check,
+                    size: 30,
+                  )),
+            )
+          ],
+        ),
+        body: Container(
+          // color: Colors.red,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              (pickedImage != null)
+                  ? Container(
+                      clipBehavior: Clip.hardEdge,
+                      constraints: BoxConstraints(maxHeight: 180, maxWidth: 200),
+                      child: Image.file(
+                        File(pickedImage!.path),
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    )
+                  : Container(
+                      height: 200,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: AssetImage('assets/upload.png')),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+              SizedBox(
+                height: 20,
+              ),
+              InkWell(
+                onTap: ((){
+                  selectImage();
+                }),
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: Colors.black87.withOpacity(0.6), style: BorderStyle.solid, width: 1)
+                    ),
+                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                   child: Text(
                     "Select Image",
                     style: TextStyle(
@@ -211,28 +213,27 @@ class _add_image_screenState extends State<add_image_screen> {
                         fontSize: 12,
                         color: Colors.black),
                   ),
-                  onPressed: () => {
-                        selectImage(),
-                      }),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: TextField(
-                maxLines: 16,
-                style:
-                    TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 14),
-                textInputAction: TextInputAction.done,
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15)),
-                    hintText: "Image Description..."),
-                controller: imageDescriptionController,
+                ),
               ),
-            ),
-          ],
+              SizedBox(
+                height: 20,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: TextField(
+                  maxLines: 10,
+                  style:
+                      TextStyle(fontFamily: 'LexendDeca-Regular', fontSize: 14),
+                  textInputAction: TextInputAction.done,
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15)),
+                      hintText: "Image Description..."),
+                  controller: imageDescriptionController,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

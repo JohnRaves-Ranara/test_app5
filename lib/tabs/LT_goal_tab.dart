@@ -238,6 +238,7 @@ class _LT_goal_tabState extends State<LT_goal_tab> {
             ),
           ),
           appBar: AppBar(
+            
             leading: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Center(
@@ -270,57 +271,51 @@ class _LT_goal_tabState extends State<LT_goal_tab> {
               ),
             ),
             leadingWidth: MediaQuery.of(context).size.width*0.45,
-            toolbarHeight: 100,
+            toolbarHeight: 80,
             actions: [
               (groupvalue == 1)
-                  ? Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 25.0, horizontal: 22),
-                      child: Container(
-                        // color: Colors.orange[100],
-                        width: MediaQuery.of(context).size.width * 0.35,
-                        child: OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              elevation: 5,
-                              side:
-                                  BorderSide(width: 0.5, color: Colors.black87),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15))),
-                          onPressed: () => {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => add_LTGoal_screen(
-                                        loggedInUser: widget.loggedInUser)))
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "ADD GOAL",
-                                  style: TextStyle(
-                                      fontSize: 10,
-                                      fontFamily: 'LexendDeca-Regular',
-                                      color: Colors.black87),
-                                  textAlign: TextAlign.center,
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Icon(
-                                  Icons.add,
-                                  size: 15,
-                                  color: Colors.black87,
-                                ),
-                              ],
-                            ),
+                  ? Container(
+                    margin: EdgeInsets.only(right: 20),
+                    // color: Colors.orange[100],
+                    width: MediaQuery.of(context).size.width * 0.35,
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          elevation: 5,
+                          side:
+                              BorderSide(width: 0.5, color: Colors.black87),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15))),
+                      onPressed: () => {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => add_LTGoal_screen(
+                                    loggedInUser: widget.loggedInUser)))
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "ADD GOAL",
+                            style: TextStyle(
+                                fontSize: 10,
+                                fontFamily: 'LexendDeca-Regular',
+                                color: Colors.black87),
+                            textAlign: TextAlign.center,
                           ),
-                        ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Icon(
+                            Icons.add,
+                            size: 15,
+                            color: Colors.black87,
+                          ),
+                        ],
                       ),
-                    )
+                    ),
+                  )
                   : (groupvalue == 0)
                       ? Container(
                           padding: EdgeInsets.symmetric(horizontal: 20),
@@ -379,29 +374,25 @@ class _LT_goal_tabState extends State<LT_goal_tab> {
                       : SizedBox()
             ],
             // centerTitle: true,
-            backgroundColor: Colors.transparent,
-            elevation: 0,
+            // backgroundColor: Colors.red,
             iconTheme: IconThemeData(color: Colors.black),
           ),
           body: Column(
             children: [
               Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: CupertinoSlidingSegmentedControl(
-                    backgroundColor: Colors.grey.withOpacity(0.075),
-                    groupValue: groupvalue,
-                    children: {
-                      0: text_Tab("Pet"),
-                      1: text_Tab("Long-Term Goals"),
-                      2: text_Tab("Completed")
-                    },
-                    onValueChanged: (groupvalue) {
-                      setState(() {
-                        this.groupvalue = groupvalue;
-                      });
-                    },
-                  ),
+                child: CupertinoSlidingSegmentedControl(
+                  backgroundColor: Colors.grey.withOpacity(0.075),
+                  groupValue: groupvalue,
+                  children: {
+                    0: text_Tab("Pet"),
+                    1: text_Tab("Long-Term Goals"),
+                    2: text_Tab("Completed")
+                  },
+                  onValueChanged: (groupvalue) {
+                    setState(() {
+                      this.groupvalue = groupvalue;
+                    });
+                  },
                 ),
               ),
               (groupvalue == 0)

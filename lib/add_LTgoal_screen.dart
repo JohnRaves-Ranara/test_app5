@@ -242,25 +242,32 @@ class _add_LTGoal_screenState extends State<add_LTGoal_screen> {
                   ),
             Padding(
               padding: const EdgeInsets.only(top: 10),
-              child: Container(
-                height: 32,
-                width: MediaQuery.of(context).size.width / 4,
-                child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      elevation: 5,
-                      backgroundColor: Colors.white,
-                      side: BorderSide(color: Colors.black87, width: 0.5),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25)),
-                    ),
-                    child: Text(
-                      "Add Icon",
-                      style: TextStyle(
-                          fontFamily: 'LexendDeca-Regular',
-                          fontSize: 12,
-                          color: Colors.black87),
-                    ),
-                    onPressed: () => {selectImage()}),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(20),
+                onTap: ((){
+                  selectImage();
+                }),
+                child: Container(
+                        
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.black87.withOpacity(0.6), style: BorderStyle.solid, width: 1)
+                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Add Banner",
+                        style: TextStyle(
+                            fontFamily: 'LexendDeca-Regular',
+                            fontSize: 12,
+                            color: Colors.black87),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
             SizedBox(height: 20),
